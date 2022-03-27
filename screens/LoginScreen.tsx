@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet, TouchableOpacity } from "react-native";
 
 import { View } from "../components/Themed";
 import { RootStackScreenProps } from "../types";
@@ -15,10 +15,37 @@ import {
   Text,
   HStack,
 } from "native-base";
+import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+
+export interface IAuth {
+  username: string;
+  password: string;
+}
 
 export default function LoginScreen({
   navigation,
 }: RootStackScreenProps<"Login">) {
+  const [auth, setAuth] = useState<IAuth>({
+    username: "",
+    password: "",
+  });
+
+  const onSubmit = () => {
+    if (auth.username === "lvkhang" && auth.password === "123456") {
+      console.log("Dang nhap thanh cong", auth);
+      Alert.alert("Alert Title", "Dang nhap thanh cong", [
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
+      navigation.push("Root");
+    } else {
+      Alert.alert("Alert Title", "Dang nhap that bai", [
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
+      console.log("Dang nhap that bai", auth);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Center w="100%">
@@ -47,12 +74,30 @@ export default function LoginScreen({
 
           <VStack space={3} mt="5">
             <FormControl>
-              <FormControl.Label>Email ID</FormControl.Label>
-              <Input />
+              <FormControl.Label>Username</FormControl.Label>
+              <Input
+                value={auth.username}
+                onChangeText={(value) => {
+                  setAuth((prev) => ({
+                    ...prev,
+                    username: value,
+                  }));
+                }}
+              />
+              {/* {!auth.username && <Text>vui long nhap username</Text>} */}
             </FormControl>
             <FormControl>
               <FormControl.Label>Password</FormControl.Label>
-              <Input type="password" />
+              <Input
+                type="password"
+                value={auth.password}
+                onChangeText={(value) => {
+                  setAuth((prev) => ({
+                    ...prev,
+                    password: value,
+                  }));
+                }}
+              />
               <Link
                 _text={{
                   fontSize: "xs",
@@ -65,7 +110,7 @@ export default function LoginScreen({
                 Forget Password?
               </Link>
             </FormControl>
-            <Button mt="2" colorScheme="indigo">
+            <Button mt="2" colorScheme="indigo" onPress={onSubmit}>
               Sign in
             </Button>
           </VStack>
