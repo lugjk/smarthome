@@ -17,11 +17,7 @@ import {
 } from "native-base";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-
-export interface IAuth {
-  username: string;
-  password: string;
-}
+import { IAuth } from "../models/models";
 
 export default function LoginScreen({
   navigation,
