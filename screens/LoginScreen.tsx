@@ -28,7 +28,7 @@ export default function LoginScreen({
   });
 
   const onSubmit = () => {
-    if (auth.username === "lvkhang" && auth.password === "123456") {
+    if (auth.username === "123" && auth.password === "123") {
       console.log("Dang nhap thanh cong", auth);
       Alert.alert("Alert Title", "Dang nhap thanh cong", [
         { text: "OK", onPress: () => console.log("OK Pressed") },
