@@ -1,0 +1,88 @@
+import sys
+import random
+import time
+from Adafruit_IO import MQTTClient
+import serial.tools.list_ports
+
+ADAFRUIT_FEED_ID = ["group-project.bbc-relay", "group-project.bbc-buzzer", "group-project.bbc-led"]
+ADAFRUIT_TEMP_FEED_ID = "group-project.bbc-temp"
+ADAFRUIT_SWITCH_FEED_ID = "group-project.bbc-switch"
+ADAFRUIT_BUTTON_FEED_ID = "group-project.bbc-button"
+
+ADAFRUIT_IO_USERNAME = "Frost984"
+ADAFRUIT_IO_KEY = "aio_dIVB65IjbmWjVRvF1jJGuLIvdeJQ"
+
+PORT_NAME = "COM4"  #Replace this with the find port function in the book when we don't use the emulator
+
+def connected(client):
+    print("Connected succesfully")
+    for id in ADAFRUIT_FEED_ID:
+        client.subscribe(id)
+
+
+def subscribe(client, userdata, mid, granted_qos):
+    print("Subcribed")
+
+def disconnected(client):
+    print("Disconnected from Adafruit IO")
+    sys.exit(1)
+
+
+def message(client, feed_id, payload):
+    print(f"Data received from feed {feed_id}: {payload}")
+    #Add an if-else here to compare feed_id and make a proper payload for serial
+    #ser.write((str(payload) + "#").encode())
+
+def processData(data):
+    print(f"Data from serial: {data}")
+    data = data.replace("!", "")
+    data = data.replace("#", "")
+    try:
+        (id, field, value) = data.split(":")
+        if field == "TEMP-HUMID":
+            (temp, humid) = value.split("-")
+            client.publish(ADAFRUIT_TEMP_FEED_ID, temp)
+        elif field == "BUTTON":
+            client.publish(ADAFRUIT_BUTTON_FEED_ID, value)
+        elif field == "MAGNETIC":
+            client.publish(ADAFRUIT_SWITCH_FEED_ID, value)
+    except ValueError:
+        print(f"Data format error: {data}")
+
+
+ser = serial.Serial(port=PORT_NAME, baudrate=115200)
+if (ser != None):
+    print("Serial connected")
+    isMicrobitConnected = True
+else:
+    isMicrobitConnected = False
+
+mess = ""
+def readSerial():
+    bytesToRead = ser.inWaiting()
+    global mess
+    if (bytesToRead > 0):
+        mess = mess + ser.read(bytesToRead).decode("utf-8")
+        while ("#" in mess) and ("!" in mess):
+            start = mess.find("!")
+            end = mess.find("#")
+            processData(mess[start:end+1])
+            if (end == len(mess)):
+                mess = ""
+            else:
+                mess = mess[end + 1:]
+
+
+client = MQTTClient(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
+client.on_connect = connected
+client.on_disconnect = disconnected
+client.on_message = message
+client.on_subscribe = subscribe
+client.connect()
+client.loop_background()
+
+while True:
+    if isMicrobitConnected:
+        readSerial()
+    time.sleep(1)
+
