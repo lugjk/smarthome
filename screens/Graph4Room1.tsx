@@ -18,7 +18,7 @@ import {
 //import React Native chart Kit for different kind of Chart
 import { LineChart } from "react-native-chart-kit";
 
-const Graph1Room1 = () => {
+const Graph4Room1 = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
@@ -30,13 +30,13 @@ const Graph1Room1 = () => {
           labels: ["0 pm", "6 am", " 12 am", " 6 pm", "12 pm"],
           datasets: [
             {
-              data: [0, 3, 8, 13, 18],
+              data: [0, 3, 4, 10, 16],
             },
           ],
         }}
         width={Dimensions.get("window").width - 16} // from react-native
         height={220}
-        yAxisLabel={"used"}
+        yAxisLabel={"hour"}
         chartConfig={{
           backgroundColor: "#1cc910",
           backgroundGradientFrom: "#eff3ff",
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
-export default Graph1Room1;
+export default Graph4Room1;

@@ -24,28 +24,59 @@ export default function TabHomeScreen({
   return (
     <View style={styles.container}>
       <View style={styles.rowItem}>
-        <TouchableOpacity onPress={pushGarph} style={styles.item}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push("Graph1Room1");
+          }}
+          style={styles.item}
+        >
           <Text>TV</Text>
         </TouchableOpacity>
-        <View style={styles.item}>
+
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push("Graph2Room1");
+          }}
+          style={styles.item}
+        >
           <Text>PC</Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.rowItem}>
-        <View style={styles.item}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push("Graph3Room1");
+          }}
+          style={styles.item}
+        >
           <Text>TV</Text>
-        </View>
-        <View style={styles.item}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push("Graph4Room1");
+          }}
+          style={styles.item}
+        >
           <Text>PC</Text>
-        </View>
+        </TouchableOpacity>
       </View>
       <View style={styles.rowItem}>
-        <View style={styles.item}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push("Graph5Room1");
+          }}
+          style={styles.item}
+        >
           <Text>TV</Text>
-        </View>
-        <View style={styles.item}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.push("Graph6Room1");
+          }}
+          style={styles.item}
+        >
           <Text>PC</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );

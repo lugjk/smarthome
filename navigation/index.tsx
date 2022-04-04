@@ -17,6 +17,12 @@ import { ColorSchemeName, Pressable } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import Graph1Room1 from "../screens/Graph1Room1";
+
+import Graph2Room1 from "../screens/Graph2Room1";
+import Graph3Room1 from "../screens/Graph3Room1";
+import Graph4Room1 from "../screens/Graph4Room1";
+import Graph5Room1 from "../screens/Graph5Room1";
+import Graph6Room1 from "../screens/Graph6Room1";
 import LoginScreen from "../screens/LoginScreen";
 import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
@@ -76,9 +82,33 @@ function RootNavigator() {
       <Stack.Screen
         name="Graph1Room1"
         component={Graph1Room1}
-        options={{ title: "Oops!" }}
+        options={{ title: "Graph1" }}
       />
-
+      <Stack.Screen
+        name="Graph2Room1"
+        component={Graph2Room1}
+        options={{ title: "Graph2" }}
+      />
+      <Stack.Screen
+        name="Graph3Room1"
+        component={Graph3Room1}
+        options={{ title: "Graph3" }}
+      />
+      <Stack.Screen
+        name="Graph4Room1"
+        component={Graph4Room1}
+        options={{ title: "Graph4" }}
+      />
+      <Stack.Screen
+        name="Graph5Room1"
+        component={Graph5Room1}
+        options={{ title: "Graph5" }}
+      />
+      <Stack.Screen
+        name="Graph6Room1"
+        component={Graph6Room1}
+        options={{ title: "Graph6" }}
+      />
       <Stack.Group screenOptions={{ presentation: "modal" }}>
         <Stack.Screen name="Modal" component={ModalScreen} />
       </Stack.Group>
