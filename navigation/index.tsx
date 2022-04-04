@@ -16,6 +16,7 @@ import { ColorSchemeName, Pressable } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
+import Graph1Room1 from "../screens/Graph1Room1";
 import LoginScreen from "../screens/LoginScreen";
 import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
@@ -63,8 +64,18 @@ function RootNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="Menu"
+        component={BottomTabNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
+        options={{ title: "Oops!" }}
+      />
+      <Stack.Screen
+        name="Graph1Room1"
+        component={Graph1Room1}
         options={{ title: "Oops!" }}
       />
 

@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
@@ -11,18 +11,22 @@ const divices: IDivice[] = [
     name: "SamSung 43 inch",
     type: "Smart TV",
     isON: false,
+    Id: 5,
   },
 ];
 
 export default function TabHomeScreen({
   navigation,
 }: RootTabScreenProps<"TabHome">) {
+  function pushGarph() {
+    navigation.push("Graph1Room1");
+  }
   return (
     <View style={styles.container}>
       <View style={styles.rowItem}>
-        <View style={styles.item}>
+        <TouchableOpacity onPress={pushGarph} style={styles.item}>
           <Text>TV</Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.item}>
           <Text>PC</Text>
         </View>
