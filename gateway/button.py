@@ -7,12 +7,12 @@ radio.set_group(1)
 led.enable(True)
 # basic.show_string(s)
 
+flag = True
 def on_forever():
-    NPNBitKit.button(DigitalPin.P2)
-    if NPNBitKit.button(DigitalPin.P2):
-        s = "!1:BUTTON:" + "1" + "#"
+    global flag
+    if NPNBitKit.button(DigitalPin.P2) != flag:
+        s = "!1:BUTTON:" + ("0" if flag else "1") + "#"
         serial.write_string(s)
-        basic.pause(100)
-        s = "!1:BUTTON:" + "0" + "#"
-        serial.write_string(s)
+        flag = not flag
+  
 basic.forever(on_forever)
