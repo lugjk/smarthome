@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
+    padding: 20,
+    borderRadius: 20,
   },
 });
 export default Graph1Room1;
