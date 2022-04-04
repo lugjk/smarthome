@@ -34,7 +34,7 @@ def message(client, feed_id, payload):
     print(f"Data received from feed {feed_id}: {payload}")
     #Add an if-else here to compare feed_id and make a proper payload for serial
     if feed_id == "group-project.bbc-relay":
-        serial_payload = make_payload("11", "RELAY", payload)
+        serial_payload = make_payload("3", "RELAY", payload)
     elif feed_id == "group-project.bbc-buzzer":
         serial_payload = make_payload("2", "SPEAKER", payload)
     elif feed_id == "group-project.bbc-led":
