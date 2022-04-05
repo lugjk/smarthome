@@ -8,24 +8,21 @@ led.enable(True)
 
 flagDict = {"Button": True, "Magnet": True}
 
-buttonpin = DigitalPin.P1
-magneticpin = DigitalPin.P2
-ledpin = (DigitalPin.P4, DigitalPin.P5)
-buzzerpin = DigitalPin.P6
+buttonpin = DigitalPin.P3
+magneticpin = DigitalPin.P4
+ledpin = (DigitalPin.P1, DigitalPin.P2)
+buzzerpin = DigitalPin.P5
 
-ledstates = [(False, False), (False, True), (True, False)]
-state = 0
 
 def on_forever():
-    global flagDict, ledstates, state
+    global flagDict
     # Single Button
     if NPNBitKit.button(buttonpin) != flagDict["Button"]:
         s = "!1:BUTTON:" + ("0" if flagDict["Button"] else "1") + "#"
         serial.write_string(s)
-        if not flagDict["Button"]:
-            basic.show_number(state)
-            NPNBitKit.led2_color(ledpin[0], ledstates[state][0], ledpin[1], ledstates[state][1])
-            state = (state + 1) % 3
+        if not flagDict["Button"] and flagDict["Magnet"]:
+            NPNBitKit.buzzer(buzzerpin, False)
+            NPNBitKit.led2_color(ledpin[0], True, ledpin[1], True)
         flagDict["Button"] = not flagDict["Button"]
     basic.pause(100)
     
@@ -41,7 +38,14 @@ def on_forever():
     if NPNBitKit.button_door_open(magneticpin) != flagDict["Magnet"]:
         s = "!1:MAGNETIC:" + ("0" if flagDict["Magnet"] else "1") + "#"
         serial.write_string(s)
+        if not flagDict["Magnet"]:
+            NPNBitKit.buzzer(buzzerpin, True)
+            NPNBitKit.led2_color(ledpin[0], True, ledpin[1], False)
+        else:
+            NPNBitKit.buzzer(buzzerpin, False)
+            NPNBitKit.led2_color(ledpin[0], False, ledpin[1], True)
         flagDict["Magnet"] = not flagDict["Magnet"]
+        
 
 basic.forever(on_forever)
 
