@@ -28,6 +28,7 @@ export type RootStackParamList = {
   Graph4Room1: undefined;
   Graph5Room1: undefined;
   Graph6Room1: undefined;
+  AllRoomScreen: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
