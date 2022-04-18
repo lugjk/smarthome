@@ -68,13 +68,9 @@ function RootNavigator() {
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
-        options={{ headerShown: false }}
+        options={{ headerShown: true, title: " " }}
       />
-      <Stack.Screen
-        name="Menu"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
+
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
@@ -83,7 +79,7 @@ function RootNavigator() {
       <Stack.Screen
         name="AllRoomScreen"
         component={AllRoomsScreen}
-        options={{ title: "Menu" }}
+        options={{ title: "Menu", headerBackVisible: false }}
       />
       <Stack.Screen
         name="Graph1Room1"
@@ -142,8 +138,7 @@ function BottomTabNavigator() {
         name="TabHome"
         component={TabHomeScreen}
         options={({ navigation }: RootTabScreenProps<"TabHome">) => ({
-          title: "Home",
-
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <Pressable
