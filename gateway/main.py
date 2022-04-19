@@ -10,7 +10,7 @@ ADAFRUIT_SWITCH_FEED_ID = "group-project.bbc-switch"
 ADAFRUIT_BUTTON_FEED_ID = "group-project.bbc-button"
 
 ADAFRUIT_IO_USERNAME = "Frost984"
-ADAFRUIT_IO_KEY = "aio_gyZm62DhiVsTUoEULRrmJQK0ZMyH"
+ADAFRUIT_IO_KEY = "aio_zJfc62OsApbwxxiS4K4OjZCackUl"
 
 PORT_NAME = "COM4"  #Replace this with the find port function in the book when we don't use the emulator
 
@@ -34,7 +34,7 @@ def message(client, feed_id, payload):
     print(f"Data received from feed {feed_id}: {payload}")
     #Add an if-else here to compare feed_id and make a proper payload for serial
     if feed_id == "group-project.bbc-relay":
-        serial_payload = make_payload("11", "RELAY", payload)
+        serial_payload = make_payload("3", "RELAY", payload)
     elif feed_id == "group-project.bbc-buzzer":
         serial_payload = make_payload("2", "SPEAKER", payload)
     elif feed_id == "group-project.bbc-led":
@@ -61,7 +61,19 @@ def processData(data):
         print(f"Data format error: {data}")
 
 
-ser = serial.Serial(port=PORT_NAME, baudrate=115200)
+def getPort():
+    ports = serial.tools.list_ports.comports()
+    N = len(ports)
+    commPort = "None"
+    for i in range(0, N):
+        port = ports[i]
+        strPort = str(port)
+        if "USB Serial Device" in strPort:
+            splitPort = strPort.split(" ")
+            commPort = (splitPort[0])
+    return commPort
+
+ser = serial.Serial(port=getPort(), baudrate=115200)
 if (ser != None):
     print("Serial connected")
     isMicrobitConnected = True
@@ -96,4 +108,3 @@ while True:
     if isMicrobitConnected:
         readSerial()
     time.sleep(1)
-
