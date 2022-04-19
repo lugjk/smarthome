@@ -33,7 +33,7 @@ export default function LoginScreen({
       Alert.alert("Alert Title", "Dang nhap thanh cong", [
         { text: "OK", onPress: () => console.log("OK Pressed") },
       ]);
-      navigation.push("Root");
+      navigation.navigate("AllRoomScreen");
     } else {
       Alert.alert("Alert Title", "Dang nhap that bai", [
         { text: "OK", onPress: () => console.log("OK Pressed") },

@@ -26,7 +26,7 @@ import Graph6Room1 from "../screens/Graph6Room1";
 import LoginScreen from "../screens/LoginScreen";
 import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
-import TabHomeScreen from "../screens/TabHomeScreen";
+import AllRoomsScreen from "../screens/AllRoomsScreen";
 import TabSettingScreen from "../screens/TabSettingScreen";
 import {
   RootStackParamList,
@@ -34,6 +34,7 @@ import {
   RootTabScreenProps,
 } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
+import TabHomeScreen from "../screens/TabHomeScreen";
 
 export default function Navigation({
   colorScheme,
@@ -58,7 +59,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Root">
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="Login"
         component={LoginScreen}
@@ -67,17 +68,18 @@ function RootNavigator() {
       <Stack.Screen
         name="Root"
         component={BottomTabNavigator}
-        options={{ headerShown: false }}
+        options={{ headerShown: true, title: " " }}
       />
-      <Stack.Screen
-        name="Menu"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
+
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
         options={{ title: "Oops!" }}
+      />
+      <Stack.Screen
+        name="AllRoomScreen"
+        component={AllRoomsScreen}
+        options={{ title: "Menu", headerBackVisible: false }}
       />
       <Stack.Screen
         name="Graph1Room1"
@@ -136,8 +138,7 @@ function BottomTabNavigator() {
         name="TabHome"
         component={TabHomeScreen}
         options={({ navigation }: RootTabScreenProps<"TabHome">) => ({
-          title: "Home",
-
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <Pressable
