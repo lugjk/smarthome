@@ -3,6 +3,7 @@ export interface IDivice {
   name: string;
   type: string;
   isON: boolean;
+  Id: number;
 }
 
 export interface IAuth {

@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import AppIntroSlider from "../components/SliderIntro/Sliderintro";
 import { Text, View } from "../components/Themed";
 import { IDivice } from "../models/models";
-import { RootTabScreenProps } from "../types";
+import { RootStackScreenProps, RootTabScreenProps } from "../types";
+import LoginScreen from "./LoginScreen";
 
 const divices: IDivice[] = [
   {
@@ -17,9 +18,9 @@ const divices: IDivice[] = [
   },
 ];
 
-export default function TabHomeScreen({
+export default function AllRoomScreen({
   navigation,
-}: RootTabScreenProps<"TabHome">) {
+}: RootStackScreenProps<"AllRoomScreen">) {
   const [timesPressed, setTimesPressed] = useState(0);
 
   let textLog = "";
@@ -31,34 +32,17 @@ export default function TabHomeScreen({
   function pushGarph() {
     navigation.push("Graph1Room1");
   }
-
-  const Rooms = [
-    {
-      Room: 1,
-      title: "Room 1",
-    },
-    {
-      Room: 2,
-      title: "Room 2",
-    },
-    {
-      Room: 3,
-      title: "Room 3",
-    },
-  ];
-
-  const renderItem = ({ item }: any) => {
-    return (
-      <View style={{ backgroundColor: "#f2f4f5" }}>
-        <Text style={styles.title}>{item.title}</Text>
+  return (
+    <View style={styles.relative}>
+      <View style={styles.container}>
         <View style={styles.rowItem}>
           <TouchableOpacity
             onPress={() => {
-              navigation.push("Graph1Room1");
+              navigation.push("Root");
             }}
             style={styles.item}
           >
-            <Text>TV</Text>
+            <Text>Room1</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -67,31 +51,49 @@ export default function TabHomeScreen({
             }}
             style={styles.item}
           >
-            <Text>PC</Text>
+            <Text>Room2</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.rowItem}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push("Graph1Room1");
+            }}
+            style={styles.item}
+          >
+            <Text>Room3</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push("Graph2Room1");
+            }}
+            style={styles.item}
+          >
+            <Text>Room4</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.rowItem}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push("Graph1Room1");
+            }}
+            style={styles.item}
+          >
+            <Text>Room5</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              navigation.push("Graph2Room1");
+            }}
+            style={styles.item}
+          >
+            <Text>Room6</Text>
           </TouchableOpacity>
         </View>
       </View>
-    );
-  };
-
-  return (
-    <View style={styles.relative}>
-      <View style={styles.container}>
-        <AppIntroSlider renderItem={renderItem} data={Rooms} />
-        {}
-      </View>
-      <Pressable
-        onPress={() => {
-          setTimesPressed((current) => current + 1);
-        }}
-        style={({ pressed }) => [styles.wapperBottom]}
-      >
-        {({ pressed }) => (
-          <Text style={styles.text}>
-            {pressed ? "Recording!" : "Press me to record"}
-          </Text>
-        )}
-      </Pressable>
     </View>
   );
 }
@@ -106,18 +108,15 @@ const styles = StyleSheet.create({
   relative: {
     flex: 1,
     position: "relative",
-    backgroundColor: "#f2f4f5",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-    backgroundColor: "#f2f4f5",
   },
   separator: {
     marginVertical: 30,
     height: 1,
     width: "80%",
-    backgroundColor: "#f2f4f5",
   },
   item: {
     flex: 1,
@@ -136,7 +135,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f4f5",
     marginBottom: 20,
   },
-
   text: {
     fontSize: 16,
     color: "white",

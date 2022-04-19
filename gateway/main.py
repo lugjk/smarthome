@@ -10,7 +10,7 @@ ADAFRUIT_SWITCH_FEED_ID = "group-project.bbc-switch"
 ADAFRUIT_BUTTON_FEED_ID = "group-project.bbc-button"
 
 ADAFRUIT_IO_USERNAME = "Frost984"
-ADAFRUIT_IO_KEY = "aio_zJfc62OsApbwxxiS4K4OjZCackUl"
+ADAFRUIT_IO_KEY = "aio_qJaZ10pZlJnQMxtSk5tDB3v4NYj6"
 
 PORT_NAME = "COM4"  #Replace this with the find port function in the book when we don't use the emulator
 
