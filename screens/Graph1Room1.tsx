@@ -2,7 +2,9 @@
 // https://aboutreact.com/react-native-chart-kit/
 
 // import React in our code
-import React, { useState } from "react";
+import { List } from "native-base";
+import React, { useEffect, useState } from "react";
+import AppLoading from 'expo-app-loading';
 
 // import all the components we are going to use
 import {
@@ -18,19 +20,68 @@ import {
 //import React Native chart Kit for different kind of Chart
 import { LineChart } from "react-native-chart-kit";
 
-const Graph1Room1 = () => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+// const data = require("../api/data/switch.json");
 
+const Graph1Room1 = () => {
+  const [data, setData] = useState([]);
+  const [dataGraph, setDataGraph] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(false);
+  
+  const getData = () => {
+    fetch("https://io.adafruit.com/api/v2/Frost984/feeds/group-project.bbc-switch/data").then(
+      res => res.json()
+    ).then(
+      data => {setData(data);}
+    ).catch((error) => console.error(error))
+  }
+
+  const getDataGraph = () => {
+    fetch("/switch/processdata").then(
+      res => res.json()
+    ).then(
+      data => {setDataGraph(data); console.log(data), setLoading(true)}
+    ).catch((error) => console.error(error))
+  }
+
+  useEffect(() => {
+    getData()
+    getDataGraph()
+  },[])
+
+  // if (!loading) {
+  //   return (
+  //     <AppLoading
+  //     />
+  //   );
+  // }
+
+ 
+
+  // useEffect(() => {
+  //   fetch("/switch/data").then(
+  //     res => res.json()
+  //   ).then(
+  //     data => {
+  //       setData(data)
+  //       console.log(data)
+  //     }
+  //   )
+
+  // }, [])
+  if (loading) {
+    setIsEnabled(data[0]["value"] === "1")
+  }
+  const toggleSwitch = () => setIsEnabled((prevState) => !prevState);
   return (
     <>
       <Text style={styles.header}>Time spending</Text>
       <LineChart
         data={{
-          labels: ["0 pm", "6 am", " 12 am", " 6 pm", "12 pm"],
+          labels: ["0", "6", "12", "18", "24"],
           datasets: [
             {
-              data: [0, 3, 8, 13, 18],
+              data: dataGraph,
             },
           ],
         }}

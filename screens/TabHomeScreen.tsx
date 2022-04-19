@@ -18,7 +18,7 @@ const divices: IDivice[] = [
 export default function TabHomeScreen({
   navigation,
 }: RootTabScreenProps<"TabHome">) {
-  function pushGarph() {
+  function pushGraph() {
     navigation.push("Graph1Room1");
   }
   return (
