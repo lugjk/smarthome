@@ -1,5 +1,4 @@
-import { Alert, StyleSheet, TouchableOpacity } from "react-native";
-
+import { Alert, StyleSheet } from "react-native";
 import { View } from "../components/Themed";
 import { RootStackScreenProps } from "../types";
 import {
@@ -10,13 +9,9 @@ import {
   Input,
   Button,
   Center,
-  NativeBaseProvider,
   Link,
-  Text,
-  HStack,
 } from "native-base";
 import { useState } from "react";
-import { useNavigation } from "@react-navigation/native";
 import { IAuth } from "../models/models";
 
 export default function LoginScreen({

@@ -1,8 +1,6 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect, useRef, useState } from "react";
-import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
-import EditScreenInfo from "../components/EditScreenInfo";
 import AppIntroSlider from "../components/SliderIntro/Sliderintro";
 import { Text, View } from "../components/Themed";
 import { IDivice } from "../models/models";
@@ -24,7 +22,6 @@ export default function TabHomeScreen({
 }: RootTabScreenProps<"TabHome">) {
   const [timesPressed, setTimesPressed] = useState(0);
   const { params }: any = route.params;
-  console.log("params: ", params);
 
   let textLog = "";
   if (timesPressed > 1) {
