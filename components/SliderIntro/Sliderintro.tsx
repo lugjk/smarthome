@@ -284,23 +284,6 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
     }
   };
 
-  _getItemLayout = (e: { nativeEvent: NativeScrollEvent }) => {
-    console.log("_onMomentumScrollEnd: ");
-    const offset = e.nativeEvent.contentOffset.x;
-    // Touching very very quickly and continuous brings about
-    // a variation close to - but not quite - the width.
-    // That's why we round the number.
-    // Also, Android phones and their weird numbers
-    const newIndex = this._rtlSafeIndex(Math.round(offset / this.state.width));
-    if (newIndex === this.state.activeIndex) {
-      // No page change, don't do anything
-      return;
-    }
-    const lastIndex = this.state.activeIndex;
-    this.setState({ activeIndex: newIndex });
-    this.props.onSlideChange && this.props.onSlideChange(newIndex, lastIndex);
-  };
-
   render() {
     // Separate props used by the component to props passed to FlatList
     /* eslint-disable @typescript-eslint/no-unused-vars */
