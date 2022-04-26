@@ -46,6 +46,7 @@ type Props<ItemT> = {
   showPrevButton: boolean;
   showSkipButton: boolean;
   bottomButton: boolean;
+  activeIndex: number;
 } & FlatListProps<ItemT>;
 
 type State = {
@@ -75,11 +76,12 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
     showPrevButton: false,
     showSkipButton: false,
     bottomButton: false,
+    activeIndex: 0,
   };
   state = {
     width: 0,
     height: 0,
-    activeIndex: 0,
+    activeIndex: this.props.activeIndex,
   };
   flatList: FlatList<ItemT> | undefined;
 
