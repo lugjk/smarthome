@@ -108,4 +108,3 @@ while True:
     if isMicrobitConnected:
         readSerial()
     time.sleep(1)
-
