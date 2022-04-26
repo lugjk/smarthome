@@ -35,7 +35,10 @@ export default function AllRoomScreen({
         <View style={styles.rowItem}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("Root");
+              navigation.navigate("Root", {
+                screen: "TabHome",
+                params: { id: 0 },
+              });
             }}
             style={styles.item}
           >

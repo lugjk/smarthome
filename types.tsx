@@ -17,7 +17,7 @@ declare global {
 }
 
 export type RootTabParamList = {
-  TabHome: undefined;
+  TabHome: { id: number };
   TabSetting: undefined;
 };
 

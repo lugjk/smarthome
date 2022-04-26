@@ -20,15 +20,16 @@ const divices: IDivice[] = [
 
 export default function TabHomeScreen({
   navigation,
+  route,
 }: RootTabScreenProps<"TabHome">) {
   const [timesPressed, setTimesPressed] = useState(0);
   const slider = useRef<any>();
-  const router = useRoute();
-  console.log("router: ", router);
+  console.log("route: ", route.params);
 
   useEffect(() => {
-    slider.current && slider.current.goToSlide(2, true);
-  }, []);
+    !!slider.current && slider.current.goToSlide(2, true);
+    console.log("slider.current: ", slider.current);
+  }, [route]);
 
   let textLog = "";
   if (timesPressed > 1) {

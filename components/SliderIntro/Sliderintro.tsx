@@ -86,6 +86,7 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
   goToSlide = (pageNum: number, triggerOnSlideChange?: boolean) => {
     const prevNum = this.state.activeIndex;
     this.setState({ activeIndex: pageNum });
+    console.log(this._rtlSafeIndex(pageNum) * this.state.width);
     this.flatList?.scrollToOffset({
       offset: this._rtlSafeIndex(pageNum) * this.state.width,
     });
@@ -201,6 +202,7 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
     );
 
   _renderPagination = () => {
+    console.log("_renderPagination: ");
     const isLastSlide = this.state.activeIndex === this.props.data.length - 1;
     const isFirstSlide = this.state.activeIndex === 0;
 
@@ -249,6 +251,7 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
   };
 
   _onMomentumScrollEnd = (e: { nativeEvent: NativeScrollEvent }) => {
+    console.log("_onMomentumScrollEnd: ");
     const offset = e.nativeEvent.contentOffset.x;
     // Touching very very quickly and continuous brings about
     // a variation close to - but not quite - the width.
@@ -266,6 +269,7 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
 
   _onLayout = ({ nativeEvent }: LayoutChangeEvent) => {
     const { width, height } = nativeEvent.layout;
+    console.log("width: ", width);
     if (width !== this.state.width || height !== this.state.height) {
       // Set new width to update rendering of pages
       this.setState({ width, height });
@@ -278,6 +282,23 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
       };
       setTimeout(func, 0); // Must be called like this to avoid bugs :/
     }
+  };
+
+  _getItemLayout = (e: { nativeEvent: NativeScrollEvent }) => {
+    console.log("_onMomentumScrollEnd: ");
+    const offset = e.nativeEvent.contentOffset.x;
+    // Touching very very quickly and continuous brings about
+    // a variation close to - but not quite - the width.
+    // That's why we round the number.
+    // Also, Android phones and their weird numbers
+    const newIndex = this._rtlSafeIndex(Math.round(offset / this.state.width));
+    if (newIndex === this.state.activeIndex) {
+      // No page change, don't do anything
+      return;
+    }
+    const lastIndex = this.state.activeIndex;
+    this.setState({ activeIndex: newIndex });
+    this.props.onSlideChange && this.props.onSlideChange(newIndex, lastIndex);
   };
 
   render() {
