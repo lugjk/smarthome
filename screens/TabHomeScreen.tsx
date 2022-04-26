@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
@@ -21,6 +22,13 @@ export default function TabHomeScreen({
   navigation,
 }: RootTabScreenProps<"TabHome">) {
   const [timesPressed, setTimesPressed] = useState(0);
+  const slider = useRef<any>();
+  const router = useRoute();
+  console.log("router: ", router);
+
+  useEffect(() => {
+    slider.current && slider.current.goToSlide(2, true);
+  }, []);
 
   let textLog = "";
   if (timesPressed > 1) {
@@ -77,8 +85,11 @@ export default function TabHomeScreen({
   return (
     <View style={styles.relative}>
       <View style={styles.container}>
-        <AppIntroSlider renderItem={renderItem} data={Rooms} />
-        {}
+        <AppIntroSlider
+          renderItem={renderItem}
+          data={Rooms}
+          ref={(ref) => (slider.current = ref)}
+        />
       </View>
       <Pressable
         onPress={() => {

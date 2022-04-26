@@ -16,6 +16,11 @@ declare global {
   }
 }
 
+export type RootTabParamList = {
+  TabHome: undefined;
+  TabSetting: undefined;
+};
+
 export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Modal: undefined;
@@ -33,11 +38,6 @@ export type RootStackParamList = {
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, Screen>;
-
-export type RootTabParamList = {
-  TabHome: undefined;
-  TabSetting: undefined;
-};
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   CompositeScreenProps<

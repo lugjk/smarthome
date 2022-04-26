@@ -1,12 +1,9 @@
 import { useState } from "react";
-import { Image, Pressable, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
-import EditScreenInfo from "../components/EditScreenInfo";
-import AppIntroSlider from "../components/SliderIntro/Sliderintro";
 import { Text, View } from "../components/Themed";
 import { IDivice } from "../models/models";
-import { RootStackScreenProps, RootTabScreenProps } from "../types";
-import LoginScreen from "./LoginScreen";
+import { RootStackScreenProps } from "../types";
 
 const divices: IDivice[] = [
   {
@@ -38,7 +35,7 @@ export default function AllRoomScreen({
         <View style={styles.rowItem}>
           <TouchableOpacity
             onPress={() => {
-              navigation.push("Root");
+              navigation.navigate("Root");
             }}
             style={styles.item}
           >
