@@ -37,7 +37,7 @@ export default function AllRoomScreen({
             onPress={() => {
               navigation.navigate("Root", {
                 screen: "TabHome",
-                params: { id: 2 },
+                params: { id: 0 },
               });
             }}
             style={styles.item}
@@ -47,7 +47,10 @@ export default function AllRoomScreen({
 
           <TouchableOpacity
             onPress={() => {
-              navigation.push("Graph2Room1");
+              navigation.navigate("Root", {
+                screen: "TabHome",
+                params: { id: 1 },
+              });
             }}
             style={styles.item}
           >
@@ -58,7 +61,10 @@ export default function AllRoomScreen({
         <View style={styles.rowItem}>
           <TouchableOpacity
             onPress={() => {
-              navigation.push("Graph1Room1");
+              navigation.navigate("Root", {
+                screen: "TabHome",
+                params: { id: 2 },
+              });
             }}
             style={styles.item}
           >
