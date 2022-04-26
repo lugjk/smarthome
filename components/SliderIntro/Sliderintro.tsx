@@ -46,7 +46,7 @@ type Props<ItemT> = {
   showPrevButton: boolean;
   showSkipButton: boolean;
   bottomButton: boolean;
-  activeIndex: number;
+  initialIndex: number;
 } & FlatListProps<ItemT>;
 
 type State = {
@@ -76,19 +76,18 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
     showPrevButton: false,
     showSkipButton: false,
     bottomButton: false,
-    activeIndex: 0,
+    initialIndex: 0,
   };
   state = {
     width: 0,
     height: 0,
-    activeIndex: this.props.activeIndex,
+    activeIndex: this.props.initialIndex,
   };
   flatList: FlatList<ItemT> | undefined;
 
   goToSlide = (pageNum: number, triggerOnSlideChange?: boolean) => {
     const prevNum = this.state.activeIndex;
     this.setState({ activeIndex: pageNum });
-    console.log(this._rtlSafeIndex(pageNum) * this.state.width);
     this.flatList?.scrollToOffset({
       offset: this._rtlSafeIndex(pageNum) * this.state.width,
     });
@@ -204,7 +203,6 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
     );
 
   _renderPagination = () => {
-    console.log("_renderPagination: ");
     const isLastSlide = this.state.activeIndex === this.props.data.length - 1;
     const isFirstSlide = this.state.activeIndex === 0;
 
@@ -253,7 +251,6 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
   };
 
   _onMomentumScrollEnd = (e: { nativeEvent: NativeScrollEvent }) => {
-    console.log("_onMomentumScrollEnd: ");
     const offset = e.nativeEvent.contentOffset.x;
     // Touching very very quickly and continuous brings about
     // a variation close to - but not quite - the width.
@@ -271,7 +268,6 @@ export default class AppIntroSlider<ItemT = any> extends React.Component<
 
   _onLayout = ({ nativeEvent }: LayoutChangeEvent) => {
     const { width, height } = nativeEvent.layout;
-    console.log("width: ", width);
     if (width !== this.state.width || height !== this.state.height) {
       // Set new width to update rendering of pages
       this.setState({ width, height });

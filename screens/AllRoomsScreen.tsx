@@ -37,7 +37,7 @@ export default function AllRoomScreen({
             onPress={() => {
               navigation.navigate("Root", {
                 screen: "TabHome",
-                params: { id: 0 },
+                params: { id: 2 },
               });
             }}
             style={styles.item}

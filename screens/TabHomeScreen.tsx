@@ -23,13 +23,8 @@ export default function TabHomeScreen({
   route,
 }: RootTabScreenProps<"TabHome">) {
   const [timesPressed, setTimesPressed] = useState(0);
-  const slider = useRef<any>();
-  console.log("route: ", route.params);
-
-  useEffect(() => {
-    !!slider.current && slider.current.goToSlide(2, true);
-    console.log("slider.current: ", slider.current);
-  }, [route]);
+  const { params }: any = route.params;
+  console.log("params: ", params);
 
   let textLog = "";
   if (timesPressed > 1) {
@@ -89,7 +84,7 @@ export default function TabHomeScreen({
         <AppIntroSlider
           renderItem={renderItem}
           data={Rooms}
-          ref={(ref) => (slider.current = ref)}
+          initialIndex={params.id}
         />
       </View>
       <Pressable
