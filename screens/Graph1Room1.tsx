@@ -17,11 +17,23 @@ import {
 
 //import React Native chart Kit for different kind of Chart
 import { LineChart } from "react-native-chart-kit";
+import {mqtt_callbacks, mqtt_client, relay_feed} from "../mqtt_connection";
+
 
 const Graph1Room1 = () => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const toggleSwitch = () => {
+  	const newState = !isEnabled;
+  	const mqtt_message = newState ? "1" : "0";
+  	mqtt_client.publish(relay_feed, mqtt_message);
+  	setIsEnabled(newState);
+  	}
 
+  mqtt_callbacks[relay_feed] = (payload) => {
+    const newState = payload.toString() === "1";
+    setIsEnabled(newState);
+  }
+  
   return (
     <>
       <Text style={styles.header}>Time spending</Text>
