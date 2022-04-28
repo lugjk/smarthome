@@ -16,13 +16,32 @@ fetch("/users/login", {
   body: JSON.stringify(data)
 }).then((res) => res.json()).then((data)=>{console.log(data)});
 
-=> Sau khi login có info Account
-	active: true
-	email: "leviethoa0231@gmail.com"
-	name: "hoale231"
-	token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNjI2OTk0ZWEyZjY2MDc4ZjdkMTVhZWEyIn0.ze2Fmp8mRu6aMCMuDpuAg0AGcJ8BGUcg2c-lP_u4NJs"
-	_id: "626994ea2f66078f7d15aea2"
-* Lưu lại cái token, id để dùng
+// => Sau khi login có info Account
+// 	active: true
+// 	email: "leviethoa0231@gmail.com"
+// 	name: "hoale231"
+// 	token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNjI2OTk0ZWEyZjY2MDc4ZjdkMTVhZWEyIn0.ze2Fmp8mRu6aMCMuDpuAg0AGcJ8BGUcg2c-lP_u4NJs"
+// 	_id: "626994ea2f66078f7d15aea2"
+// * Lưu lại cái token, id để dùng
+
+// Get current user
+fetch("/users/", {
+  method: "GET",
+  headers: {'Content-Type': 'application/json', "Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNjI2OTk0ZWEyZjY2MDc4ZjdkMTVhZWEyIn0.ze2Fmp8mRu6aMCMuDpuAg0AGcJ8BGUcg2c-lP_u4NJs",},
+}).then((res) => res.json()).then((data)=>{console.log(data)});
+
+// Update current user
+let data = {
+  name: "",
+  email: "",
+  password: "",
+};
+
+fetch("/users/", {
+  method: "PUT",
+  headers: {'Content-Type': 'application/json', "Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNjI2OTk0ZWEyZjY2MDc4ZjdkMTVhZWEyIn0.ze2Fmp8mRu6aMCMuDpuAg0AGcJ8BGUcg2c-lP_u4NJs",},
+  body: JSON.stringify(data)
+}).then((res) => res.json()).then((data) => { console.log(data) });
 
 // Add devices
 let data = {
@@ -52,12 +71,6 @@ fetch("/devices/data", {
 
 
 
-
-// test
-fetch("/users/", {
-  method: "GET",
-  headers: {'Content-Type': 'application/json', "Authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNjI2OTk0ZWEyZjY2MDc4ZjdkMTVhZWEyIn0.ze2Fmp8mRu6aMCMuDpuAg0AGcJ8BGUcg2c-lP_u4NJs",},
-}).then((res) => res.json()).then((data)=>{console.log(data)});
 
 
 

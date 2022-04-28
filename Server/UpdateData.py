@@ -2,7 +2,7 @@ import schedule
 from IotData import *
 from datetime import datetime, timedelta
 import pymongo
-from models import Devices
+from Models import Devices
 
 
 client = pymongo.MongoClient('mongodb://localhost:27017/')

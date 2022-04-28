@@ -1,5 +1,5 @@
 """Application Models"""
-import bson, os
+import bson
 from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import timedelta, datetime
@@ -156,11 +156,16 @@ class User:
         user["_id"] = str(user["_id"])
         return user
 
-    def update(self, user_id, name=""):
+    def update(self, user_id, name="", email="", password=""):
         """Update a user"""
         data = {}
         if name:
             data["name"] = name
+        if email:
+            data["email"] = email
+        if password:
+            data["password"] = self.encrypt_password(password)
+
         user = db.Account.update_one(
             {"_id": bson.ObjectId(user_id)},
             {

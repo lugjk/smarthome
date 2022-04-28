@@ -10,8 +10,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or 'this is a secret'
 print(SECRET_KEY)
 app.config['SECRET_KEY'] = SECRET_KEY
 
-from models import Devices, User
-from auth import token_required
+from Models import Devices, User
+from Auth import token_required
 
 @app.route("/", methods=["GET"])
 def hello():
@@ -108,14 +108,15 @@ def get_current_user(current_user):
 @token_required
 def update_user(current_user):
     try:
-        if user.get("name"):
-            user = User().update(current_user["_id"], user["name"])
+        user = request.json
+        if user.get("name") or user.get("email") or user.get("password"):
+            user = User().update(current_user["_id"], user["name"], user["email"], user["password"])
             return jsonify({
                 "message": "successfully updated account",
                 "data": user
             }), 201
         return {
-            "message": "Invalid data, you can only update your account name!",
+            "message": "Invalid data, you can only update your account name, email or password!",
             "data": None,
             "error": "Bad Request"
         }, 400
