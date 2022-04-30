@@ -12,7 +12,7 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable } from "react-native";
+import { ColorSchemeName, Pressable, TouchableOpacity } from "react-native";
 
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
@@ -31,6 +31,7 @@ import TabSettingScreen from "../screens/TabSettingScreen";
 import { RootStackParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import TabHomeScreen from "../screens/TabHomeScreen";
+import { Text } from "../components/Themed";
 
 export default function Navigation({
   colorScheme,
@@ -52,6 +53,14 @@ export default function Navigation({
  * https://reactnavigation.org/docs/modal
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const HeaderRight = () => {
+  return (
+    <TouchableOpacity>
+      <Text>aaa</Text>
+    </TouchableOpacity>
+  );
+};
 
 function RootNavigator() {
   return (
@@ -75,7 +84,11 @@ function RootNavigator() {
       <Stack.Screen
         name="AllRoomScreen"
         component={AllRoomsScreen}
-        options={{ title: "Menu", headerBackVisible: false }}
+        options={{
+          title: "Menu",
+          headerBackVisible: false,
+          headerRight: HeaderRight,
+        }}
       />
       <Stack.Screen
         name="Graph1Room1"
