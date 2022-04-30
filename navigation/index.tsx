@@ -3,7 +3,6 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   NavigationContainer,
@@ -32,6 +31,7 @@ import { RootStackParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import TabHomeScreen from "../screens/TabHomeScreen";
 import { Text } from "../components/Themed";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function Navigation({
   colorScheme,
@@ -57,7 +57,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const HeaderRight = () => {
   return (
     <TouchableOpacity>
-      <Text>aaa</Text>
+      <AntDesign name="setting" size={32} color="green" />
     </TouchableOpacity>
   );
 };
