@@ -65,7 +65,7 @@ function RootNavigator() {
       <Stack.Screen
         name="Setting"
         component={Setting}
-        options={{ headerShown: true }}
+        options={{ title: "Account setting" }}
       />
       <Stack.Screen
         name="Root"

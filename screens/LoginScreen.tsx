@@ -1,6 +1,7 @@
-import { Alert, StyleSheet } from "react-native";
-import { View } from "../components/Themed";
+import { Alert, StyleSheet, Touchable, TouchableOpacity } from "react-native";
 import { RootStackScreenProps } from "../types";
+import { Text, View } from "../components/Themed";
+
 import {
   Box,
   Heading,
@@ -89,17 +90,13 @@ export default function LoginScreen({
                   }));
                 }}
               />
-              <Link
-                _text={{
-                  fontSize: "xs",
-                  fontWeight: "500",
-                  color: "indigo.500",
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.push("Setting");
                 }}
-                alignSelf="flex-end"
-                mt="1"
               >
-                Forget Password?
-              </Link>
+                <Text>Forget Password?</Text>
+              </TouchableOpacity>
             </FormControl>
             <Button mt="2" colorScheme="indigo" onPress={onSubmit}>
               Sign in
