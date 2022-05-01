@@ -16,6 +16,7 @@ import { ColorSchemeName, Pressable, TouchableOpacity } from "react-native";
 import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import Graph1Room1 from "../screens/Graph1Room1";
+import IDscreen from "../screens/IDscreen";
 
 import Graph2Room1 from "../screens/Graph2Room1";
 import Graph3Room1 from "../screens/Graph3Room1";
@@ -26,13 +27,12 @@ import LoginScreen from "../screens/LoginScreen";
 import ModalScreen from "../screens/ModalScreen";
 import NotFoundScreen from "../screens/NotFoundScreen";
 import AllRoomsScreen from "../screens/AllRoomsScreen";
-import TabSettingScreen from "../screens/TabSettingScreen";
+import Setting from "../screens/Setting";
 import { RootStackParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import TabHomeScreen from "../screens/TabHomeScreen";
 import { Text } from "../components/Themed";
 import AntDesign from "@expo/vector-icons/AntDesign";
-
 export default function Navigation({
   colorScheme,
 }: {
@@ -54,28 +54,45 @@ export default function Navigation({
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const HeaderRight = () => {
-  return (
-    <TouchableOpacity>
-      <AntDesign name="setting" size={32} color="green" />
-    </TouchableOpacity>
-  );
-};
-
 function RootNavigator() {
   return (
-    <Stack.Navigator initialRouteName="AllRoomScreen">
+    <Stack.Navigator initialRouteName="Login">
       <Stack.Screen
         name="Login"
         component={LoginScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name="Setting"
+        component={Setting}
+        options={{ headerShown: true }}
+      />
+      <Stack.Screen
         name="Root"
         component={TabHomeScreen}
-        options={{ headerShown: true, title: " " }}
+        options={({ navigation }) => ({
+          headerShown: true,
+          title: " ",
+          headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
+              <AntDesign name="setting" size={32} color="green" />
+            </TouchableOpacity>
+          ),
+        })}
       />
-
+      <Stack.Screen
+        name="IDscreen"
+        component={IDscreen}
+        options={({ navigation }) => ({
+          headerShown: true,
+          title: " ",
+          headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
+              <AntDesign name="setting" size={32} color="green" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
       <Stack.Screen
         name="NotFound"
         component={NotFoundScreen}
@@ -84,16 +101,28 @@ function RootNavigator() {
       <Stack.Screen
         name="AllRoomScreen"
         component={AllRoomsScreen}
-        options={{
+        options={({ navigation }) => ({
           title: "Menu",
           headerBackVisible: false,
-          headerRight: HeaderRight,
-        }}
+          headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
+              <AntDesign name="setting" size={32} color="green" />
+            </TouchableOpacity>
+          ),
+        })}
       />
       <Stack.Screen
         name="Graph1Room1"
         component={Graph1Room1}
-        options={{ title: "Graph1" }}
+        options={({ navigation }) => ({
+          title: "Graph1",
+          headerBackVisible: false,
+          headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
+              <AntDesign name="setting" size={32} color="green" />
+            </TouchableOpacity>
+          ),
+        })}
       />
       <Stack.Screen
         name="Graph2Room1"

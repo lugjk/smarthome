@@ -18,14 +18,16 @@ declare global {
 
 export type RootTabParamList = {
   TabHome: { id: number };
-  TabSetting: undefined;
+  Setting: undefined;
 };
 
 export type RootStackParamList = {
+  Setting: undefined;
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
   Modal: undefined;
   NotFound: undefined;
   Login: undefined;
+  IDscreen: undefined;
   Menu: undefined;
   Graph1Room1: undefined;
   Graph2Room1: undefined;
