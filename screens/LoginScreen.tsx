@@ -92,10 +92,10 @@ export default function LoginScreen({
               />
               <TouchableOpacity
                 onPress={() => {
-                  navigation.push("Setting");
+                  navigation.push("IDscreen");
                 }}
               >
-                <Text>Forget Password?</Text>
+                <Text>Change Password?</Text>
               </TouchableOpacity>
             </FormControl>
             <Button mt="2" colorScheme="indigo" onPress={onSubmit}>

@@ -83,15 +83,10 @@ function RootNavigator() {
       <Stack.Screen
         name="IDscreen"
         component={IDscreen}
-        options={({ navigation }) => ({
+        options={{
           headerShown: true,
           title: " ",
-          headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
-              <AntDesign name="setting" size={32} color="green" />
-            </TouchableOpacity>
-          ),
-        })}
+        }}
       />
       <Stack.Screen
         name="NotFound"
@@ -116,7 +111,7 @@ function RootNavigator() {
         component={Graph1Room1}
         options={({ navigation }) => ({
           title: "Graph1",
-          headerBackVisible: false,
+          headerBackVisible: true,
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
               <AntDesign name="setting" size={32} color="green" />

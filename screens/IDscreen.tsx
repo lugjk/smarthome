@@ -69,7 +69,7 @@ export default function IDscreen({
               />
             </FormControl>
             <FormControl>
-              <FormControl.Label>Username</FormControl.Label>
+              <FormControl.Label>New password</FormControl.Label>
               <Input
                 value={changeauth.changepassword}
                 onChangeText={(value) => {
