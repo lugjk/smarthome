@@ -8,6 +8,78 @@ DATABASE_URL = 'mongodb://localhost:27017/'
 client = MongoClient(DATABASE_URL)
 db = client.Smarthome
 
+
+class Rooms:
+    """Rooms Model"""
+    def __init__(self):
+        return
+
+    def create(self, name="", user_id=""):
+        """Create a new room"""
+        room = self.get_by_user_id_and_name(user_id, name)
+        if room:
+            return
+        new_room = db.Rooms.insert_one(
+            {
+                "name": name,
+                "user_id": user_id,
+                "devices": []
+            }
+        )
+        return self.get_by_id(new_room.inserted_id)
+
+    def get_all(self):
+        """Get all rooms"""
+        rooms = db.rooms.find()
+        return [{**room, "_id": str(room["_id"])} for room in rooms]
+
+    def get_by_id(self, room_id):
+        """Get a room by id"""
+        room = db.rooms.find_one({"_id": bson.ObjectId(room_id)})
+        if not room:
+            return
+        room["_id"] = str(room["_id"])
+        return room
+
+    def get_by_user_id(self, user_id):
+        """Get all rooms created by a user"""
+        rooms = db.rooms.find({"user_id": user_id})
+        return [{**room, "_id": str(room["_id"])} for room in rooms]
+
+    def get_by_user_id_and_name(self, user_id, name):
+        """Get a rooms given its name and id"""
+        room = db.rooms.find_one({"user_id": user_id, "name": name})
+        if not room:
+            return
+        room["_id"] = str(room["_id"])
+        return room
+
+
+    def update(self, room_id, name="", devices=None):
+        """Update a room"""
+        data={}
+        if name: data["name"]=name
+        if devices != None: data["devices"]=devices
+
+        room = db.rooms.update_one(
+            {"_id": bson.ObjectId(room_id)},
+            {
+                "$set": data
+            }
+        )
+        room = self.get_by_id(room_id)
+        return room
+
+    def delete(self, room_id):
+        """Delete a room"""
+        room = db.rooms.delete_one({"_id": bson.ObjectId(room_id)})
+        return room
+
+    def delete_by_user_id(self, user_id):
+        """Delete all rooms created by a user"""
+        room = db.rooms.delete_many({"user_id": bson.ObjectId(user_id)})
+        return room
+    
 class Devices:
     """Devices Model"""
     def __init__(self):
@@ -71,12 +143,10 @@ class Devices:
         devices = db.Devices.find({"user_id": user_id, "category": category})
         return [{**device, "_id": str(device["_id"])} for device in devices]
 
-    def update(self, device_id, title="", description="", image_url="", category="", user_id=""):
+    def update(self, device_id, name="", category=""):
         """Update a device"""
         data={}
-        if title: data["title"]=title
-        if description: data["description"]=description
-        if image_url: data["image_url"]=image_url
+        if name: data["name"]=name
         if category: data["category"]=category
 
         device = db.Devices.update_one(

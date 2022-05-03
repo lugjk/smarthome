@@ -10,7 +10,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY') or 'this is a secret'
 print(SECRET_KEY)
 app.config['SECRET_KEY'] = SECRET_KEY
 
-from Models import Devices, User
+from Models import Devices, User, Rooms
 from Auth import token_required
 
 @app.route("/", methods=["GET"])
@@ -204,11 +204,11 @@ def get_devices(current_user):
 def get_device(current_user, device_name):
     try:
         device = Devices().get_by_name(device_name)
-        if not device:
+        if not device or device["user_id"] != current_user["_id"]:
             return {
-                "message": "device not found",
+                "message": "device not found for user",
                 "data": None,
-                "error": "Not Found"
+                "error": "Not found"
             }, 404
         return jsonify({
             "message": "successfully retrieved a device",
@@ -239,6 +239,7 @@ def update_device(current_user, device_name):
             "message": "successfully updated a device",
             "data": device
         }), 201
+
     except Exception as e:
         return jsonify({
             "message": "failed to update a device",
@@ -293,6 +294,126 @@ def get_data_device(current_user):
             "error": str(e),
             "data": None
         }), 500
+
+@app.route("/rooms", methods=["POST"])
+@token_required
+def add_room(current_user):
+    try:
+        room = dict(request.json)
+
+        if not room:
+            return {
+                "message": "Invalid data, you need to give the room name room, catelogy, userID",
+                "data": None,
+                "error": "Bad Request"
+            }, 400
+
+        room["user_id"] = current_user["_id"]
+
+        room = Rooms().create(**room)
+        if not room:
+            return {
+                "message": "The room has been created by user",
+                "data": None,
+                "error": "Conflict"
+            }, 400
+        return jsonify({
+            "message": "successfully created a new room",
+            "data": room
+        }), 201
+
+    except Exception as e:
+        return jsonify({
+            "message": "failed to create a new room",
+            "error": str(e),
+            "data": None
+        }), 500
+
+@app.route("/rooms/", methods=["GET"])
+@token_required
+def get_rooms(current_user):
+    try:
+        rooms = Rooms().get_by_user_id(current_user["_id"])
+        return jsonify({
+            "message": "successfully retrieved all rooms",
+            "data": rooms
+        })
+    except Exception as e:
+        return jsonify({
+            "message": "failed to retrieve all rooms",
+            "error": str(e),
+            "data": None
+        }), 500
+
+@app.route("/rooms/<room_name>", methods=["GET"])
+@token_required
+def get_room(current_user, room_name):
+    try:
+        room = Rooms().get_by_user_id_and_name(current_user["_id"], room_name)
+        if not room:
+            return {
+                "message": "room not found",
+                "data": None,
+                "error": "Not Found"
+            }, 404
+        return jsonify({
+            "message": "successfully retrieved a room",
+            "data": room
+        })
+    except Exception as e:
+        return jsonify({
+            "message": "Something went wrong",
+            "error": str(e),
+            "data": None
+        }), 500
+
+@app.route("/rooms/<room_name>", methods=["PUT"])
+@token_required
+def update_room(current_user, room_name):
+    try:
+        room = Rooms().get_by_user_id_and_name(current_user["_id"], room_name)
+        if not room:
+            return {
+                "message": "room not found for user",
+                "data": None,
+                "error": "Not found"
+            }, 404
+        room = request.form
+
+        room = Rooms().update(room_name, **room)
+        return jsonify({
+            "message": "successfully updated a room",
+            "data": room
+        }), 201
+    except Exception as e:
+        return jsonify({
+            "message": "failed to update a room",
+            "error": str(e),
+            "data": None
+        }), 400
+
+@app.route("/rooms/<room_name>", methods=["DELETE"])
+@token_required
+def delete_room(current_user, room_name):
+    try:
+        room = Rooms().get_by_name(room_name)
+        if not room or room["user_id"] != current_user["_id"]:
+            return {
+                "message": "room not found for user",
+                "data": None,
+                "error": "Not found"
+            }, 404
+        Rooms().delete(room_name)
+        return jsonify({
+            "message": "successfully deleted a room",
+            "data": None
+        }), 204
+    except Exception as e:
+        return jsonify({
+            "message": "failed to delete a room",
+            "error": str(e),
+            "data": None
+        }), 400
 
 @app.errorhandler(403)
 def forbidden(e):
