@@ -69,7 +69,7 @@ export default function TabHomeScreen({
         <AppIntroSlider
           renderItem={renderItem}
           data={Rooms}
-          initialIndex={params.id}
+          initialIndex={room.id}
         />
       </View>
       <Pressable
