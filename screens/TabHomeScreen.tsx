@@ -1,20 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 import AppIntroSlider from "../components/SliderIntro/Sliderintro";
 import { Text, View } from "../components/Themed";
-import { IDivice } from "../models/models";
+import { IDivice, IRoom } from "../models/models";
+import Rooms from "../mooks/rooms";
 import { RootTabScreenProps } from "../types";
-
-const divices: IDivice[] = [
-  {
-    code: "smarttv",
-    name: "SamSung 43 inch",
-    type: "Smart TV",
-    isON: false,
-    Id: 5,
-  },
-];
 
 export default function TabHomeScreen({
   navigation,
@@ -22,6 +13,18 @@ export default function TabHomeScreen({
 }: RootTabScreenProps<"TabHome">) {
   const [timesPressed, setTimesPressed] = useState(0);
   const { params }: any = route.params;
+  const [room, setRoom] = useState<IRoom>({
+    id: 0,
+    title: "",
+    divices: [],
+  });
+
+  useEffect(() => {
+    const filter = Rooms.find((item) => item.id === params.id);
+    if (filter) {
+      setRoom(filter);
+    }
+  }, [params.id]);
 
   let textLog = "";
   if (timesPressed > 1) {
@@ -32,21 +35,6 @@ export default function TabHomeScreen({
   function pushGarph() {
     navigation.push("Graph1Room1");
   }
-
-  const Rooms = [
-    {
-      Room: 1,
-      title: "Room 1",
-    },
-    {
-      Room: 2,
-      title: "Room 2",
-    },
-    {
-      Room: 3,
-      title: "Room 3",
-    },
-  ];
 
   const renderItem = ({ item }: any) => {
     return (

@@ -5,27 +5,29 @@ const divices: IDivice[] = [
     name: "SamSung 43 inch",
     type: "Smart TV",
     isON: false,
-    Id: 1,
+    id: 1,
   },
   {
     code: "may lanh",
     name: "SamSung ",
     type: "Smart device",
     isON: false,
-    Id: 2,
+    id: 2,
   },
   {
     code: "door",
     name: "EnterDoor",
     type: "Smart door",
     isON: false,
-    Id: 3,
+    id: 3,
   },
   {
     code: "LED",
     name: "Dinning Room LED ",
     type: "Smart LED",
     isON: false,
-    Id: 4,
+    id: 4,
   },
 ];
+
+export default divices;

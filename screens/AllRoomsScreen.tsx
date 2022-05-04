@@ -2,18 +2,9 @@ import { useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 import { Text, View } from "../components/Themed";
-import { IDivice } from "../models/models";
+import { IRoom } from "../models/models";
+import Rooms from "../mooks/rooms";
 import { RootStackScreenProps } from "../types";
-
-const divices: IDivice[] = [
-  {
-    code: "smarttv",
-    name: "SamSung 43 inch",
-    type: "Smart TV",
-    isON: false,
-    Id: 5,
-  },
-];
 
 export default function AllRoomScreen({
   navigation,
@@ -29,35 +20,46 @@ export default function AllRoomScreen({
   function pushGarph() {
     navigation.push("Graph1Room1");
   }
+
+  const convertTwoRow = (items: any[], amountInRow: number = 0) => {
+    if (!items || items.length === 0) {
+      return [];
+    }
+    const rows = items.reduce(function (rows, key, index) {
+      return (
+        (index % amountInRow === 0
+          ? rows.push([key])
+          : rows[rows.length - 1].push(key)) && rows
+      );
+    }, []);
+    return rows;
+  };
+
+  const data = convertTwoRow(Rooms);
+
   return (
     <View style={styles.relative}>
       <View style={styles.container}>
-        <View style={styles.rowItem}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Root", {
-                screen: "TabHome",
-                params: { id: 0 },
-              });
-            }}
-            style={styles.item}
-          >
-            <Text>Room1</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Root", {
-                screen: "TabHome",
-                params: { id: 1 },
-              });
-            }}
-            style={styles.item}
-          >
-            <Text>Room2</Text>
-          </TouchableOpacity>
-        </View>
-
+        {data.map((rows: any) => {
+          return (
+            <View style={styles.rowItem}>
+              {rows.map((item: IRoom) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Root", {
+                      screen: "TabHome",
+                      params: { id: item.id },
+                    });
+                  }}
+                  style={styles.item}
+                >
+                  <Text>Room1</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          );
+        })}
+        {/* 
         <View style={styles.rowItem}>
           <TouchableOpacity
             onPress={() => {
@@ -98,7 +100,7 @@ export default function AllRoomScreen({
           >
             <Text>Room6</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
       </View>
     </View>
   );
