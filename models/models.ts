@@ -3,7 +3,13 @@ export interface IDivice {
   name: string;
   type: string;
   isON: boolean;
-  Id: number;
+  id: number;
+}
+
+export interface IRoom {
+  title: string;
+  id: number;
+  divices: IDivice[];
 }
 
 export interface IAuth {
