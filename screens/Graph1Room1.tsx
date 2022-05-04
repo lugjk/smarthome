@@ -17,23 +17,11 @@ import {
 
 //import React Native chart Kit for different kind of Chart
 import { LineChart } from "react-native-chart-kit";
-import {mqtt_callbacks, mqtt_client, relay_feed} from "../mqtt_connection";
-
 
 const Graph1Room1 = () => {
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => {
-  	const newState = !isEnabled;
-  	const mqtt_message = newState ? "1" : "0";
-  	mqtt_client.publish(relay_feed, mqtt_message);
-  	setIsEnabled(newState);
-  	}
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  mqtt_callbacks[relay_feed] = (payload) => {
-    const newState = payload.toString() === "1";
-    setIsEnabled(newState);
-  }
-  
   return (
     <>
       <Text style={styles.header}>Time spending</Text>
@@ -42,13 +30,13 @@ const Graph1Room1 = () => {
           labels: ["0 pm", "6 am", " 12 am", " 6 pm", "12 pm"],
           datasets: [
             {
-              data: [0, 3, 8, 13, 18],
+              data: [0, 3, 4, 7, 11, 17],
             },
           ],
         }}
         width={Dimensions.get("window").width - 16} // from react-native
         height={220}
-        yAxisLabel={"used"}
+        yAxisLabel={"hour"}
         chartConfig={{
           backgroundColor: "#1cc910",
           backgroundGradientFrom: "#eff3ff",
@@ -97,8 +85,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 20,
-    borderRadius: 20,
   },
 });
 export default Graph1Room1;

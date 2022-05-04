@@ -1,7 +1,6 @@
-import { Alert, StyleSheet, Touchable, TouchableOpacity } from "react-native";
+import { Alert, StyleSheet } from "react-native";
+import { View } from "../components/Themed";
 import { RootStackScreenProps } from "../types";
-import { Text, View } from "../components/Themed";
-
 import {
   Box,
   Heading,
@@ -13,28 +12,28 @@ import {
   Link,
 } from "native-base";
 import { useState } from "react";
-import { IAuth } from "../models/models";
+import { IAuth2, IAuth } from "../models/models";
 
-export default function LoginScreen({
+export default function IDscreen({
   navigation,
-}: RootStackScreenProps<"Login">) {
-  const [auth, setAuth] = useState<IAuth>({
+}: RootStackScreenProps<"IDscreen">) {
+  const [changeauth, setAuth] = useState<IAuth2>({
     username: "",
     password: "",
+    changepassword: "",
   });
 
   const onSubmit = () => {
-    if (auth.username === "123" && auth.password === "123") {
-      console.log("Dang nhap thanh cong", auth);
-      Alert.alert("Alert Title", "Dang nhap thanh cong", [
+    if (changeauth.username === "123" && changeauth.password === "123") {
+      console.log("Successfully  change password", changeauth);
+      Alert.alert("Alert Title", "Successfully change password", [
         { text: "OK", onPress: () => console.log("OK Pressed") },
       ]);
-      navigation.navigate("AllRoomScreen");
     } else {
-      Alert.alert("Alert Title", "Dang nhap that bai", [
+      Alert.alert("Alert Title", "Change password failed", [
         { text: "OK", onPress: () => console.log("OK Pressed") },
       ]);
-      console.log("Dang nhap that bai", auth);
+      console.log("Change password failed", changeauth);
     }
   };
 
@@ -42,33 +41,11 @@ export default function LoginScreen({
     <View style={styles.container}>
       <Center w="100%">
         <Box safeArea p="2" py="8" w="90%" maxW="290">
-          <Heading
-            size="lg"
-            fontWeight="600"
-            color="coolGray.800"
-            _dark={{
-              color: "warmGray.50",
-            }}
-          >
-            Welcome
-          </Heading>
-          <Heading
-            mt="1"
-            _dark={{
-              color: "warmGray.200",
-            }}
-            color="coolGray.600"
-            fontWeight="medium"
-            size="xs"
-          >
-            Sign in to continue!
-          </Heading>
-
           <VStack space={3} mt="5">
             <FormControl>
               <FormControl.Label>Username</FormControl.Label>
               <Input
-                value={auth.username}
+                value={changeauth.username}
                 onChangeText={(value) => {
                   setAuth((prev) => ({
                     ...prev,
@@ -82,7 +59,7 @@ export default function LoginScreen({
               <FormControl.Label>Password</FormControl.Label>
               <Input
                 type="password"
-                value={auth.password}
+                value={changeauth.password}
                 onChangeText={(value) => {
                   setAuth((prev) => ({
                     ...prev,
@@ -90,16 +67,22 @@ export default function LoginScreen({
                   }));
                 }}
               />
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.push("IDscreen");
+            </FormControl>
+            <FormControl>
+              <FormControl.Label>New password</FormControl.Label>
+              <Input
+                value={changeauth.changepassword}
+                onChangeText={(value) => {
+                  setAuth((prev) => ({
+                    ...prev,
+                    changepassword: value,
+                  }));
                 }}
-              >
-                <Text>Change Password?</Text>
-              </TouchableOpacity>
+              />
+              {/* {!auth.username && <Text>vui long nhap username</Text>} */}
             </FormControl>
             <Button mt="2" colorScheme="indigo" onPress={onSubmit}>
-              Sign in
+              Change password
             </Button>
           </VStack>
         </Box>

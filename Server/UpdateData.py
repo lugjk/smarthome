@@ -25,14 +25,7 @@ def updateData():
             "Value": str(getActiveTimeSwitch(d, start, end))
         }
         for d in listDevice
-    ])
-    print([{
-            "Sensor": d,
-            "Timestamp": now,
-            "Value": str(getActiveTimeSwitch(d, start, end))
-        }
-        for d in listDevice])
-    # print(getTemp(start, end))
+    ]) 
 
 # schedule.every().day.at("00:00").do(job)
 schedule.every(10).seconds.do(updateData)
