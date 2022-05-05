@@ -35,28 +35,26 @@ export default function AllRoomScreen({
   };
 
   const data = convertTwoRow(Rooms, 2);
-  console.log(data);
   return (
     <View style={styles.relative}>
       <View style={styles.container}>
-        {data.map((rows: any) => {
+        {data.map((rows: any, index: number) => {
           return (
-            <View>
-              <View style={styles.rowItem}>
-                {rows.map((item: IRoom) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("Root", {
-                        screen: "TabHome",
-                        params: { id: item.id },
-                      });
-                    }}
-                    style={styles.item}
-                  >
-                    <Text>{item.title}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+            <View style={styles.rowItem} key={index}>
+              {rows.map((item: IRoom, index: number) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => {
+                    navigation.navigate("Root", {
+                      screen: "TabHome",
+                      params: { id: item.id },
+                    });
+                  }}
+                  style={styles.item}
+                >
+                  <Text>{item.title}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           );
         })}

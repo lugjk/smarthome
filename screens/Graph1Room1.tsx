@@ -2,7 +2,8 @@
 // https://aboutreact.com/react-native-chart-kit/
 
 // import React in our code
-import React, { useState } from "react";
+import { useRoute } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 
 // import all the components we are going to use
 import {
@@ -18,26 +19,56 @@ import {
 //import React Native chart Kit for different kind of Chart
 import { LineChart } from "react-native-chart-kit";
 import { IDivice, IRoom } from "../models/models";
-import { GraphRoomScreenProps } from "../types";
+import Rooms from "../mooks/rooms";
+import { RootStackScreenProps } from "../types";
 
-const Graph1Room1 = (
-  item: IDivice,
-  { route }: GraphRoomScreenProps<"Graph1Room1">
-) => {
-  const { params }: any = route.params;
-  console.log("params: ", params);
+const Graph1Room1 = () => {
+  const router = useRoute();
+  console.log("router:", router);
+  const { params }: any = router?.params;
+  //console.log("params: ", params);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
+  const [divice, setDivice] = useState<IDivice>({
+    id: 0,
+    code: "",
+    isON: false,
+    name: "",
+    type: "",
+    time6: 0,
+    time12: 0,
+    time18: 0,
+    time24: 0,
+  });
+
+  useEffect(() => {
+    if (params) {
+      const filterRoom = Rooms.find((item) => item.id === params.idRoom);
+      const filter =
+        filterRoom && filterRoom?.divices.find((item) => item.id === params.id);
+      if (filter) {
+        setDivice(filter);
+      }
+    }
+  }, [params?.id]);
+
   return (
     <>
-      <Text style={styles.header}>Time spending of {item.code}</Text>
+      <Text style={styles.header}>Time spending of {divice.code}</Text>
+      {/* <Text style={styles.header}>Time spending of {item.code}</Text> */}
       <LineChart
         data={{
           labels: ["0 pm", "6 am", " 12 am", " 6 pm", "12 pm"],
           datasets: [
             {
-              data: [0, item.time6, item.time12, item.time18, item.time24],
+              data: [
+                0,
+                divice.time6,
+                divice.time12,
+                divice.time18,
+                divice.time24,
+              ],
             },
           ],
         }}

@@ -9,6 +9,20 @@ import divices from "../mooks/devices";
 import Rooms from "../mooks/rooms";
 import { RootTabScreenProps } from "../types";
 
+const convertTwoRow = (items: any[], amountInRow: number = 0) => {
+  if (!items || items.length === 0) {
+    return [];
+  }
+  const rows = items.reduce(function (rows, key, index) {
+    return (
+      (index % amountInRow === 0
+        ? rows.push([key])
+        : rows[rows.length - 1].push(key)) && rows
+    );
+  }, []);
+  return rows;
+};
+
 export default function TabHomeScreen({
   navigation,
   route,
@@ -20,30 +34,13 @@ export default function TabHomeScreen({
     title: "",
     divices: [],
   });
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
   useEffect(() => {
     const filter = Rooms.find((item) => item.id === params.id);
     if (filter) {
       setRoom(filter);
     }
   }, [params.id]);
-
-  const convertTwoRow = (items: any[], amountInRow: number = 0) => {
-    if (!items || items.length === 0) {
-      return [];
-    }
-    const rows = items.reduce(function (rows, key, index) {
-      return (
-        (index % amountInRow === 0
-          ? rows.push([key])
-          : rows[rows.length - 1].push(key)) && rows
-      );
-    }, []);
-    return rows;
-  };
-
-  const devicedata = convertTwoRow(divices, 2);
 
   let textLog = "";
   if (timesPressed > 1) {
@@ -52,39 +49,55 @@ export default function TabHomeScreen({
     textLog = "onPress";
   }
 
+  // const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+
+  const toggleSwitch = (id: number, value: boolean) => {
+    console.log("value: ", value);
+    room.divices.map((y) => {
+      if (y.id === id) {
+        y.isON = !value;
+      }
+      return y;
+    });
+    console.log("room: ", room);
+    setRoom(room);
+  };
+
   const rdevices = convertTwoRow(divices, 2);
 
   const renderItem = ({ item }: any) => {
     return (
       <View style={{ backgroundColor: "#f2f4f5" }}>
         <Text style={styles.title}>{item.title}</Text>
-        {rdevices.map((rows: any) => {
+        {rdevices.map((rows: any, index: number) => {
           return (
-            <View style={styles.rowItem}>
-              {rows.map((item: IDivice) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("Graph1Room1", {
-                      screen: "Graph1Room1",
-                      params: { id: item.id },
-                    });
-                  }}
-                  style={styles.item}
-                >
-                  <Text>{item.code}</Text>
-                </TouchableOpacity>
-                /*<View style={styles.container}>
+            <View style={styles.rowItem} key={index}>
+              {rows.map((item: IDivice, index: number) => {
+                console.log("item: ", item);
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      navigation.navigate("Graph1Room1", {
+                        id: item.id,
+                        idRoom: room.id,
+                      });
+                    }}
+                    style={styles.item}
+                  >
+                    <Text>{item.code}</Text>
                     <View style={styles.containerbutton}>
                       <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
-                        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                        thumbColor={item.isON ? "#f5dd4b" : "#f4f3f4"}
                         ios_backgroundColor="#3e3e3e"
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
+                        onValueChange={(value) => toggleSwitch(item.id, value)}
+                        value={item.isON}
                       />
                     </View>
-                  </View>*/
-              ))}
+                  </TouchableOpacity>
+                );
+              })}
             </View>
           );
         })}
@@ -152,13 +165,20 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
+  containerItem: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: "#f2f4f5",
+    marginBottom: 20,
+  },
   rowItem: {
     display: "flex",
     flexDirection: "row",
     backgroundColor: "#f2f4f5",
     marginBottom: 20,
   },
-
   text: {
     fontSize: 16,
     color: "white",
