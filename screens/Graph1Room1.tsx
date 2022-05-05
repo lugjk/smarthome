@@ -22,11 +22,8 @@ import { IDivice, IRoom } from "../models/models";
 import Rooms from "../mooks/rooms";
 import { RootStackScreenProps } from "../types";
 
-const Graph1Room1 = () => {
-  const router = useRoute();
-  console.log("router:", router);
-  const { params }: any = router?.params;
-  //console.log("params: ", params);
+const Graph1Room1 = ({ route }: RootStackScreenProps<"Graph1Room1">) => {
+  const { params }: any = route.params;
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
