@@ -1,9 +1,11 @@
+import { Switch } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 import AppIntroSlider from "../components/SliderIntro/Sliderintro";
 import { Text, View } from "../components/Themed";
 import { IDivice, IRoom } from "../models/models";
+import divices from "../mooks/devices";
 import Rooms from "../mooks/rooms";
 import { RootTabScreenProps } from "../types";
 
@@ -18,7 +20,8 @@ export default function TabHomeScreen({
     title: "",
     divices: [],
   });
-
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
   useEffect(() => {
     const filter = Rooms.find((item) => item.id === params.id);
     if (filter) {
@@ -26,39 +29,65 @@ export default function TabHomeScreen({
     }
   }, [params.id]);
 
+  const convertTwoRow = (items: any[], amountInRow: number = 0) => {
+    if (!items || items.length === 0) {
+      return [];
+    }
+    const rows = items.reduce(function (rows, key, index) {
+      return (
+        (index % amountInRow === 0
+          ? rows.push([key])
+          : rows[rows.length - 1].push(key)) && rows
+      );
+    }, []);
+    return rows;
+  };
+
+  const devicedata = convertTwoRow(divices, 2);
+
   let textLog = "";
   if (timesPressed > 1) {
     textLog = timesPressed + "x onPress";
   } else if (timesPressed > 0) {
     textLog = "onPress";
   }
-  function pushGarph() {
-    navigation.push("Graph1Room1");
-  }
+
+  const rdevices = convertTwoRow(divices, 2);
 
   const renderItem = ({ item }: any) => {
     return (
       <View style={{ backgroundColor: "#f2f4f5" }}>
         <Text style={styles.title}>{item.title}</Text>
-        <View style={styles.rowItem}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push("Graph1Room1");
-            }}
-            style={styles.item}
-          >
-            <Text>TV</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push("Graph2Room1");
-            }}
-            style={styles.item}
-          >
-            <Text>PC</Text>
-          </TouchableOpacity>
-        </View>
+        {rdevices.map((rows: any) => {
+          return (
+            <View style={styles.rowItem}>
+              {rows.map((item: IDivice) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Graph1Room1", {
+                      screen: "Graph1Room1",
+                      params: { id: item.id },
+                    });
+                  }}
+                  style={styles.item}
+                >
+                  <Text>{item.code}</Text>
+                </TouchableOpacity>
+                /*<View style={styles.container}>
+                    <View style={styles.containerbutton}>
+                      <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={toggleSwitch}
+                        value={isEnabled}
+                      />
+                    </View>
+                  </View>*/
+              ))}
+            </View>
+          );
+        })}
       </View>
     );
   };
@@ -93,6 +122,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 20,
     paddingHorizontal: 10,
+    marginBottom: 20,
     backgroundColor: "#f2f4f5",
   },
   relative: {
@@ -136,7 +166,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
   },
-
+  containerbutton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   wapperBottom: {
     position: "absolute",
     bottom: 0,

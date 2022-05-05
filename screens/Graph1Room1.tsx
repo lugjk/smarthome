@@ -17,20 +17,26 @@ import {
 
 //import React Native chart Kit for different kind of Chart
 import { LineChart } from "react-native-chart-kit";
+import { IDivice, IRoom } from "../models/models";
+import { RootStackParamList } from "../types";
 
-const Graph1Room1 = () => {
+const Graph1Room1 = (
+  item: IDivice,
+  { route }: RootStackParamList<"Graph1Room1">
+) => {
+  const { params }: any = route.params;
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   return (
     <>
-      <Text style={styles.header}>Time spending</Text>
+      <Text style={styles.header}>Time spending of {item.code}</Text>
       <LineChart
         data={{
           labels: ["0 pm", "6 am", " 12 am", " 6 pm", "12 pm"],
           datasets: [
             {
-              data: [0, 3, 4, 7, 11, 17],
+              data: [0, item.time6, item.time12, item.time18, item.time24],
             },
           ],
         }}
