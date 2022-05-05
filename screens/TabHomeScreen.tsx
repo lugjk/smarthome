@@ -69,7 +69,6 @@ export default function TabHomeScreen({
           return (
             <View style={styles.rowItem} key={index}>
               {rows.map((item: IDivice, index: number) => {
-                console.log("item: ", item);
                 return (
                   <TouchableOpacity
                     key={index}
