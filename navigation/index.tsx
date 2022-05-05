@@ -75,7 +75,7 @@ function RootNavigator() {
           title: " ",
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
-              <AntDesign name="setting" size={32} color="green" />
+              <AntDesign name="setting" size={32} color="black" />
             </TouchableOpacity>
           ),
         })}
@@ -101,7 +101,7 @@ function RootNavigator() {
           headerBackVisible: false,
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
-              <AntDesign name="setting" size={32} color="green" />
+              <AntDesign name="setting" size={32} color="black" />
             </TouchableOpacity>
           ),
         })}
@@ -114,7 +114,7 @@ function RootNavigator() {
           headerBackVisible: true,
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("Setting")}>
-              <AntDesign name="setting" size={32} color="green" />
+              <AntDesign name="setting" size={32} color="black" />
             </TouchableOpacity>
           ),
         })}
