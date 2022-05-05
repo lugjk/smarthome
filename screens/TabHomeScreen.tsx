@@ -49,17 +49,13 @@ export default function TabHomeScreen({
     textLog = "onPress";
   }
 
-  // const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-
   const toggleSwitch = (id: number, value: boolean) => {
-    console.log("value: ", value);
     room.divices.map((y) => {
       if (y.id === id) {
         y.isON = !value;
       }
       return y;
     });
-    console.log("room: ", room);
     setRoom(room);
   };
 
