@@ -21,6 +21,10 @@ export type RootTabParamList = {
   Setting: undefined;
 };
 
+export type GraphRoomParamList = {
+  Graph1Room1: { id: number };
+};
+
 export type RootStackParamList = {
   Setting: undefined;
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
@@ -29,7 +33,7 @@ export type RootStackParamList = {
   Login: undefined;
   IDscreen: undefined;
   Menu: undefined;
-  Graph1Room1: undefined;
+  Graph1Room1: NavigatorScreenParams<GraphRoomParamList> | undefined;
   Graph2Room1: undefined;
   Graph3Room1: undefined;
   Graph4Room1: undefined;
@@ -46,3 +50,6 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
     BottomTabScreenProps<RootTabParamList, Screen>,
     NativeStackScreenProps<RootStackParamList>
   >;
+
+export type GraphRoomScreenProps<Screen extends keyof GraphRoomParamList> =
+  NativeStackScreenProps<GraphRoomParamList, Screen>;

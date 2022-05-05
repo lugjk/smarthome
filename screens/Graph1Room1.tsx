@@ -18,13 +18,14 @@ import {
 //import React Native chart Kit for different kind of Chart
 import { LineChart } from "react-native-chart-kit";
 import { IDivice, IRoom } from "../models/models";
-import { RootStackParamList } from "../types";
+import { GraphRoomScreenProps } from "../types";
 
 const Graph1Room1 = (
   item: IDivice,
-  { route }: RootStackParamList<"Graph1Room1">
+  { route }: GraphRoomScreenProps<"Graph1Room1">
 ) => {
   const { params }: any = route.params;
+  console.log("params: ", params);
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
