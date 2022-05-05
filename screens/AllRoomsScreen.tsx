@@ -7,6 +7,21 @@ import { IRoom } from "../models/models";
 import Rooms from "../mooks/rooms";
 import { RootStackScreenProps } from "../types";
 
+const convertTwoRow = (items: any[], amountInRow: number = 0) => {
+  if (!items || items.length === 0) {
+    return [];
+  }
+
+  const rows = items.reduce(function (rows, key, index) {
+    return (
+      (index % amountInRow === 0
+        ? rows.push([key])
+        : rows[rows.length - 1].push(key)) && rows
+    );
+  }, []);
+  return rows;
+};
+
 export default function AllRoomScreen({
   navigation,
 }: RootStackScreenProps<"AllRoomScreen">) {
@@ -18,21 +33,6 @@ export default function AllRoomScreen({
   } else if (timesPressed > 0) {
     textLog = "onPress";
   }
-
-  const convertTwoRow = (items: any[], amountInRow: number = 0) => {
-    if (!items || items.length === 0) {
-      return [];
-    }
-
-    const rows = items.reduce(function (rows, key, index) {
-      return (
-        (index % amountInRow === 0
-          ? rows.push([key])
-          : rows[rows.length - 1].push(key)) && rows
-      );
-    }, []);
-    return rows;
-  };
 
   const data = convertTwoRow(Rooms, 2);
   return (

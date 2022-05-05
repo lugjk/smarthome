@@ -53,7 +53,6 @@ const Graph1Room1 = ({ route }: RootStackScreenProps<"Graph1Room1">) => {
   return (
     <>
       <Text style={styles.header}>Time spending of {divice.code}</Text>
-      {/* <Text style={styles.header}>Time spending of {item.code}</Text> */}
       <LineChart
         data={{
           labels: ["0 pm", "6 am", " 12 am", " 6 pm", "12 pm"],

@@ -103,11 +103,13 @@ export default function TabHomeScreen({
   return (
     <View style={styles.relative}>
       <View style={styles.container}>
-        <AppIntroSlider
-          renderItem={renderItem}
-          data={Rooms}
-          initialIndex={room.id}
-        />
+        {room.id ? (
+          <AppIntroSlider
+            renderItem={renderItem}
+            data={Rooms}
+            initialIndex={Rooms.findIndex((item) => item.id === room.id)}
+          />
+        ) : null}
       </View>
       <Pressable
         onPress={() => {
