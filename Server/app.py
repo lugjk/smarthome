@@ -275,15 +275,15 @@ def delete_device(current_user, device_name):
 @token_required
 def get_data_device(current_user):
     try:
-        device_name, start_time, end_time = request.json["name"], request.json["start_time"], request.json["end_time"]
-        device = Devices().get_by_name(device_name)
+        device_id, start_time, end_time = request.json["_id"], request.json["start_time"], request.json["end_time"]
+        device = Devices().get_by_name(device_id)
         if not device or device["user_id"] != current_user["_id"]:
             return {
                 "message": "device not found for user",
                 "data": None,
                 "error": "Not Found"
             }, 404
-        timeused = Devices().get_timeused_by_name(device_name, start_time, end_time)
+        timeused = Devices().get_timeused_by_name(device_id, start_time, end_time)
         return jsonify({
             "message": "successfully retrieved a device",
             "data": {"timeused": timeused}
