@@ -52,4 +52,7 @@ export type RootTabScreenProps<Screen extends keyof RootTabParamList> =
   >;
 
 export type GraphRoomScreenProps<Screen extends keyof GraphRoomParamList> =
-  NativeStackScreenProps<GraphRoomParamList, Screen>;
+  CompositeScreenProps<
+    NativeStackScreenProps<GraphRoomParamList, Screen>,
+    NativeStackScreenProps<RootTabParamList>
+  >;
