@@ -24,8 +24,8 @@ import { RootStackScreenProps } from "../types";
 
 const Graph1Room1 = ({ route }: RootStackScreenProps<"Graph1Room1">) => {
   const { params }: any = route.params;
+
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const [divice, setDivice] = useState<IDivice>({
     id: 0,
@@ -49,6 +49,15 @@ const Graph1Room1 = ({ route }: RootStackScreenProps<"Graph1Room1">) => {
       }
     }
   }, [params?.id]);
+
+  const toggleSwitch = (value: boolean) => {
+    {
+      {
+        divice.isON = !value;
+      }
+      setDivice(divice);
+    }
+  };
 
   return (
     <>
@@ -90,10 +99,12 @@ const Graph1Room1 = ({ route }: RootStackScreenProps<"Graph1Room1">) => {
       <View style={styles.containerbutton}>
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
+          thumbColor={divice.isON ? "#f5dd4b" : "#f4f3f4"}
           ios_backgroundColor="#3e3e3e"
-          onValueChange={toggleSwitch}
-          value={isEnabled}
+          onValueChange={(value) => {
+            toggleSwitch(value);
+          }}
+          value={divice.isON}
         />
       </View>
     </>

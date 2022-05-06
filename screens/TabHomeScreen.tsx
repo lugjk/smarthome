@@ -74,8 +74,11 @@ export default function TabHomeScreen({
                     key={index}
                     onPress={() => {
                       navigation.navigate("Graph1Room1", {
-                        id: item.id,
-                        idRoom: room.id,
+                        screen: "Graph1Room1",
+                        params: {
+                          id: item.id,
+                          idRoom: room.id,
+                        },
                       });
                     }}
                     style={styles.item}
