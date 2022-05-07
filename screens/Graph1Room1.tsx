@@ -79,12 +79,12 @@ const Graph1Room1 = ({ route }: RootStackScreenProps<"Graph1Room1">) => {
         }}
         width={Dimensions.get("window").width - 16} // from react-native
         height={220}
-        yAxisLabel={"hour"}
+        yAxisSuffix={divice.code === "door" ? " times" : " hours"}
         chartConfig={{
           backgroundColor: "#1cc910",
           backgroundGradientFrom: "#eff3ff",
           backgroundGradientTo: "#efefef",
-          decimalPlaces: 2, // optional, defaults to 2dp
+          decimalPlaces: divice.code === "door" ? 0 : 2, // optional, defaults to 2dp
           color: (opacity = 255) => `rgba(0, 0, 0, ${opacity})`,
           style: {
             borderRadius: 16,

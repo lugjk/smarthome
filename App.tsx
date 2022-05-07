@@ -7,6 +7,7 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 
 const theme = extendTheme({});
+const showalert = alert("");
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
