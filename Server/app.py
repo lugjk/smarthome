@@ -4,7 +4,6 @@ from flask import Flask, request, jsonify
 from multiprocessing import Process
 from UpdateData import loopUpdate
 # from validate import validate_device, validate_email_and_password, validate_user
-import datetime
 
 app = Flask(__name__)
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'this is a secret'
@@ -416,15 +415,6 @@ def delete_room(current_user, room_name):
             "data": None
         }), 400
 
-@app.route("/ai/command", methods=["GET", "POST"])
-def recv_command():
-    #return jsonify({"text": "AI command"}), 200
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    voice_file = request.get_data()
-    with open(f"command_{current_time}.m4a", "wb") as f:
-        f.write(voice_file)
-    return "Command received", 200
-
 @app.errorhandler(403)
 def forbidden(e):
     return jsonify({
@@ -444,4 +434,4 @@ def forbidden(e):
 
 if __name__ == "__main__":
     p = Process(target=loopUpdate).start()
-    app.run(host='0.0.0.0',debug=True)
+    app.run(debug=True)
