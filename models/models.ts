@@ -3,6 +3,10 @@ export interface IDivice {
   name: string;
   type: string;
   isON: boolean;
+  time6: number;
+  time12: number;
+  time18: number;
+  time24: number;
   id: number;
 }
 

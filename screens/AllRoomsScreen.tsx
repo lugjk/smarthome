@@ -1,3 +1,4 @@
+import { Switch } from "native-base";
 import { useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
@@ -5,6 +6,21 @@ import { Text, View } from "../components/Themed";
 import { IRoom } from "../models/models";
 import Rooms from "../mooks/rooms";
 import { RootStackScreenProps } from "../types";
+
+const convertTwoRow = (items: any[], amountInRow: number = 0) => {
+  if (!items || items.length === 0) {
+    return [];
+  }
+
+  const rows = items.reduce(function (rows, key, index) {
+    return (
+      (index % amountInRow === 0
+        ? rows.push([key])
+        : rows[rows.length - 1].push(key)) && rows
+    );
+  }, []);
+  return rows;
+};
 
 export default function AllRoomScreen({
   navigation,
@@ -17,34 +33,17 @@ export default function AllRoomScreen({
   } else if (timesPressed > 0) {
     textLog = "onPress";
   }
-  function pushGarph() {
-    navigation.push("Graph1Room1");
-  }
 
-  const convertTwoRow = (items: any[], amountInRow: number = 0) => {
-    if (!items || items.length === 0) {
-      return [];
-    }
-    const rows = items.reduce(function (rows, key, index) {
-      return (
-        (index % amountInRow === 0
-          ? rows.push([key])
-          : rows[rows.length - 1].push(key)) && rows
-      );
-    }, []);
-    return rows;
-  };
-
-  const data = convertTwoRow(Rooms);
-
+  const data = convertTwoRow(Rooms, 2);
   return (
     <View style={styles.relative}>
       <View style={styles.container}>
-        {data.map((rows: any) => {
+        {data.map((rows: any, index: number) => {
           return (
-            <View style={styles.rowItem}>
-              {rows.map((item: IRoom) => (
+            <View style={styles.rowItem} key={index}>
+              {rows.map((item: IRoom, index: number) => (
                 <TouchableOpacity
+                  key={index}
                   onPress={() => {
                     navigation.navigate("Root", {
                       screen: "TabHome",
@@ -53,54 +52,12 @@ export default function AllRoomScreen({
                   }}
                   style={styles.item}
                 >
-                  <Text>Room1</Text>
+                  <Text>{item.title}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           );
         })}
-        {/* 
-        <View style={styles.rowItem}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Root", {
-                screen: "TabHome",
-                params: { id: 2 },
-              });
-            }}
-            style={styles.item}
-          >
-            <Text>Room3</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push("Graph2Room1");
-            }}
-            style={styles.item}
-          >
-            <Text>Room4</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.rowItem}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push("Graph1Room1");
-            }}
-            style={styles.item}
-          >
-            <Text>Room5</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push("Graph2Room1");
-            }}
-            style={styles.item}
-          >
-            <Text>Room6</Text>
-          </TouchableOpacity>
-        </View> */}
       </View>
     </View>
   );

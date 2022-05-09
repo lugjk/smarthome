@@ -1,11 +1,27 @@
+import { Switch } from "native-base";
 import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 import AppIntroSlider from "../components/SliderIntro/Sliderintro";
 import { Text, View } from "../components/Themed";
 import { IDivice, IRoom } from "../models/models";
+import divices from "../mooks/devices";
 import Rooms from "../mooks/rooms";
 import { RootTabScreenProps } from "../types";
+
+const convertTwoRow = (items: any[], amountInRow: number = 0) => {
+  if (!items || items.length === 0) {
+    return [];
+  }
+  const rows = items.reduce(function (rows, key, index) {
+    return (
+      (index % amountInRow === 0
+        ? rows.push([key])
+        : rows[rows.length - 1].push(key)) && rows
+    );
+  }, []);
+  return rows;
+};
 
 export default function TabHomeScreen({
   navigation,
@@ -32,33 +48,57 @@ export default function TabHomeScreen({
   } else if (timesPressed > 0) {
     textLog = "onPress";
   }
-  function pushGarph() {
-    navigation.push("Graph1Room1");
-  }
+
+  const toggleSwitch = (id: number, value: boolean) => {
+    room.divices.map((y) => {
+      if (y.id === id) {
+        y.isON = !value;
+      }
+      return y;
+    });
+    setRoom(room);
+  };
+
+  const rdevices = convertTwoRow(divices, 2);
 
   const renderItem = ({ item }: any) => {
     return (
       <View style={{ backgroundColor: "#f2f4f5" }}>
         <Text style={styles.title}>{item.title}</Text>
-        <View style={styles.rowItem}>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push("Graph1Room1");
-            }}
-            style={styles.item}
-          >
-            <Text>TV</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={() => {
-              navigation.push("Graph2Room1");
-            }}
-            style={styles.item}
-          >
-            <Text>PC</Text>
-          </TouchableOpacity>
-        </View>
+        {rdevices.map((rows: any, index: number) => {
+          return (
+            <View style={styles.rowItem} key={index}>
+              {rows.map((item: IDivice, index: number) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      navigation.navigate("Graph1Room1", {
+                        screen: "Graph1Room1",
+                        params: {
+                          id: item.id,
+                          idRoom: room.id,
+                        },
+                      });
+                    }}
+                    style={styles.item}
+                  >
+                    <Text>{item.code}</Text>
+                    <View style={styles.containerbutton}>
+                      <Switch
+                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                        thumbColor={item.isON ? "#f5dd4b" : "#f4f3f4"}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={(value) => toggleSwitch(item.id, value)}
+                        value={item.isON}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          );
+        })}
       </View>
     );
   };
@@ -66,11 +106,13 @@ export default function TabHomeScreen({
   return (
     <View style={styles.relative}>
       <View style={styles.container}>
-        <AppIntroSlider
-          renderItem={renderItem}
-          data={Rooms}
-          initialIndex={room.id}
-        />
+        {room.id ? (
+          <AppIntroSlider
+            renderItem={renderItem}
+            data={Rooms}
+            initialIndex={Rooms.findIndex((item) => item.id === room.id)}
+          />
+        ) : null}
       </View>
       <Pressable
         onPress={() => {
@@ -93,6 +135,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 20,
     paddingHorizontal: 10,
+    marginBottom: 20,
     backgroundColor: "#f2f4f5",
   },
   relative: {
@@ -122,13 +165,20 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
   },
+  containerItem: {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: "#f2f4f5",
+    marginBottom: 20,
+  },
   rowItem: {
     display: "flex",
     flexDirection: "row",
     backgroundColor: "#f2f4f5",
     marginBottom: 20,
   },
-
   text: {
     fontSize: 16,
     color: "white",
@@ -136,7 +186,11 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
   },
-
+  containerbutton: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   wapperBottom: {
     position: "absolute",
     bottom: 0,
