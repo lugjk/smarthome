@@ -22,7 +22,7 @@ class Rooms:
         new_room = db.Rooms.insert_one(
             {
                 "name": name,
-                "user_id": user_id,
+                "user_id": bson.ObjectId(user_id),
                 "devices": []
             }
         )
@@ -30,12 +30,12 @@ class Rooms:
 
     def get_all(self):
         """Get all rooms"""
-        rooms = db.rooms.find()
+        rooms = db.Rooms.find()
         return [{**room, "_id": str(room["_id"])} for room in rooms]
 
     def get_by_id(self, room_id):
         """Get a room by id"""
-        room = db.rooms.find_one({"_id": bson.ObjectId(room_id)})
+        room = db.Rooms.find_one({"_id": bson.ObjectId(room_id)})
         if not room:
             return
         room["_id"] = str(room["_id"])
@@ -43,17 +43,16 @@ class Rooms:
 
     def get_by_user_id(self, user_id):
         """Get all rooms created by a user"""
-        rooms = db.rooms.find({"user_id": user_id})
+        rooms = db.Rooms.find({"user_id": bson.ObjectId(user_id)})
         return [{**room, "_id": str(room["_id"])} for room in rooms]
 
     def get_by_user_id_and_name(self, user_id, name):
         """Get a rooms given its name and id"""
-        room = db.rooms.find_one({"user_id": user_id, "name": name})
+        room = db.Rooms.find_one({"user_id": bson.ObjectId(user_id), "name": name})
         if not room:
             return
         room["_id"] = str(room["_id"])
         return room
-
 
     def update(self, room_id, name="", devices=None):
         """Update a room"""
@@ -61,7 +60,37 @@ class Rooms:
         if name: data["name"]=name
         if devices != None: data["devices"]=devices
 
-        room = db.rooms.update_one(
+        room = db.Rooms.update_one(
+            {"_id": bson.ObjectId(room_id)},
+            {
+                "$set": data
+            }
+        )
+        room = self.get_by_id(room_id)
+        return room
+
+    def addDevice(self, room_id, device_id):
+        """Add a device to room"""
+        data=self.get_by_id(room_id)
+        data["devices"].append(bson.ObjectId(device_id))
+        del data["_id"]
+
+        room = db.Rooms.update_one(
+            {"_id": bson.ObjectId(room_id)},
+            {
+                "$set": data
+            }
+        )
+        room = self.get_by_id(room_id)
+        return room
+
+    def deleteDevice(self, room_id, device_id):
+        """Add a device to room"""
+        data=self.get_by_id(room_id)
+        data["devices"].remove(bson.ObjectId(device_id))
+        del data["_id"]
+
+        room = db.Rooms.update_one(
             {"_id": bson.ObjectId(room_id)},
             {
                 "$set": data
@@ -72,12 +101,12 @@ class Rooms:
 
     def delete(self, room_id):
         """Delete a room"""
-        room = db.rooms.delete_one({"_id": bson.ObjectId(room_id)})
+        room = db.Rooms.delete_one({"_id": bson.ObjectId(room_id)})
         return room
 
     def delete_by_user_id(self, user_id):
         """Delete all rooms created by a user"""
-        room = db.rooms.delete_many({"user_id": bson.ObjectId(user_id)})
+        room = db.Rooms.delete_many({"user_id": bson.ObjectId(user_id)})
         return room
     
 class Devices:
@@ -94,7 +123,7 @@ class Devices:
             {
                 "name": name,
                 "category": category,
-                "user_id": user_id
+                "user_id": bson.ObjectId(user_id)
             }
         )
         return self.get_by_id(new_device.inserted_id)
@@ -122,12 +151,12 @@ class Devices:
 
     def get_by_user_id(self, user_id):
         """Get all devices created by a user"""
-        devices = db.Devices.find({"user_id": user_id})
+        devices = db.Devices.find({"user_id": bson.ObjectId(user_id)})
         return [{**device, "_id": str(device["_id"])} for device in devices]
 
     def get_by_user_id_and_name(self, user_id, name):
         """Get a devices given its name and id"""
-        device = db.Devices.find_one({"user_id": user_id, "name": name})
+        device = db.Devices.find_one({"user_id": bson.ObjectId(user_id), "name": name})
         if not device:
             return
         device["_id"] = str(device["_id"])
@@ -140,7 +169,7 @@ class Devices:
 
     def get_by_user_id_and_category(self, user_id, category):
         """Get all devices by category for a particular user"""
-        devices = db.Devices.find({"user_id": user_id, "category": category})
+        devices = db.Devices.find({"user_id": bson.ObjectId(user_id), "category": category})
         return [{**device, "_id": str(device["_id"])} for device in devices]
 
     def update(self, device_id, name="", category=""):
@@ -160,6 +189,7 @@ class Devices:
 
     def delete(self, device_id):
         """Delete a device"""
+        db.TimeUsed.delete_many({"Sensor": bson.ObjectId(device_id)})
         device = db.Devices.delete_one({"_id": bson.ObjectId(device_id)})
         return device
 
@@ -168,11 +198,11 @@ class Devices:
         device = db.Devices.delete_many({"user_id": bson.ObjectId(user_id)})
         return device
     
-    def get_timeused_by_name(self, device_name, time_start, time_end):
+    def get_timeused_by_name(self, device_id, time_start, time_end):
         """Get time used of device from time_start to time_end"""
-        print(device_name, datetime.strptime(time_start, "%Y-%m-%dT%H:%M:%SZ"), datetime.strptime(time_end, "%Y-%m-%dT%H:%M:%SZ"))
+        print(device_id, datetime.strptime(time_start, "%Y-%m-%dT%H:%M:%SZ"), datetime.strptime(time_end, "%Y-%m-%dT%H:%M:%SZ"))
         data = db.TimeUsed.find({
-                        "Sensor": device_name,
+                        "Sensor": bson.ObjectId(device_id),
                         "Timestamp": {
                             "$gt": datetime.strptime(time_start, "%Y-%m-%dT%H:%M:%SZ"),
                             "$lte": datetime.strptime(time_end, "%Y-%m-%dT%H:%M:%SZ")
