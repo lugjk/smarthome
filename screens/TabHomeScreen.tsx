@@ -9,6 +9,10 @@ import divices from "../mooks/devices";
 import Rooms from "../mooks/rooms";
 import { RootTabScreenProps } from "../types";
 
+import { Audio } from 'expo-av';
+import * as FileSystem from 'expo-file-system';
+
+
 const convertTwoRow = (items: any[], amountInRow: number = 0) => {
   if (!items || items.length === 0) {
     return [];
@@ -59,7 +63,46 @@ export default function TabHomeScreen({
     setRoom(room);
   };
 
-  const rdevices = convertTwoRow(divices, 2);
+  const rdevices = convertTwoRow(divices, 2);  
+  const [recording, setRecording] = useState();
+  async function startRecording() {
+    if (recording == null){
+    try {
+      console.log('Requesting permissions..');
+      await Audio.requestPermissionsAsync();
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      }); 
+      console.log('Starting recording..');
+      const { recording } = await Audio.Recording.createAsync(
+         Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+      );
+      setRecording(recording);
+      console.log('Recording started');
+    } catch (err) {
+      console.error('Failed to start recording', err);
+    }
+   }
+  }
+  
+  async function stopRecording() {
+    console.log('Stopping recording..');
+    setRecording(undefined);
+    await recording.stopAndUnloadAsync();
+    const uri = recording.getURI(); 
+    console.log('Recording stopped and stored at', uri);
+    //Playback the recorded sound for debugginh
+    /*const {sound} = await Audio.Sound.createAsync({
+  		uri: uri,
+  });
+    console.log("Playing Sound");
+    await sound.playAsync();*/
+    
+    console.log("Sending record file to server");
+    const serverUrl = "https://test-dadn.free.beeceptor.com";
+    await FileSystem.uploadAsync(serverUrl, uri);
+}
 
   const renderItem = ({ item }: any) => {
     return (
@@ -118,6 +161,9 @@ export default function TabHomeScreen({
         onPress={() => {
           setTimesPressed((current) => current + 1);
         }}
+        onPressIn={startRecording}
+        onPressOut={stopRecording}
+        
         style={({ pressed }) => [styles.wapperBottom]}
       >
         {({ pressed }) => (
