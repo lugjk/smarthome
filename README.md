@@ -22,20 +22,20 @@ yarn install
 ## Run the app:
 There are some configurations to do before you can start running this app (like changing the server IP and the adafruit key, etc.) but those config are still kinda messy, so (maybe) I'll write the guide after we finish this shitty project.
 
-Run the server
+On the server, run
 ```
 python Server/app.py
 ```
 
-For the client, we use Expo as our developing and testing platform. To start the client in testing mode, use
+For the client, we use Expo as our developing and testing platform. On the client machine, run
 ```
 expo start
 ```
 
-Then use can follow the instructions on the screen to run the app on a phone or in a web browser.
+to start the app in testing mode, then use can follow the instructions on the screen to run the app on a phone or in a web browser.
 (It would be so nice if we find out how to build a standalone APK. 2 days left, anyone?)
 
-To run the gateway, first connect your board and load `gateway/full_script.py` to it. Then use
+To start the gateway, first connect your board and load `gateway/full_script.py` to it. Then run
 ```
 python gateway/main.py
 ```
