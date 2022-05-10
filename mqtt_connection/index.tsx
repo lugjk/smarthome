@@ -5,21 +5,21 @@ const port = 443;
 const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
 
 const connectUrl = `wss://${host}:${port}/mqtt`;
-const mqtt_client = mqtt.connect(connectUrl, {
+export const mqtt_client = mqtt.connect(connectUrl, {
   clientId,
   clean: true,
   connectTimeout: 4000,
   username: "Frost984",
-  password: "aio_zJfc62OsApbwxxiS4K4OjZCackUl",
+  password: "aio_Hcfx22l7mvlbQW8IaxhpU0Q1511U",
   reconnectPeriod: 1000,
 });
 
-const relay_feed = "Frost984/feeds/group-project.bbc-relay";
-const buzzer_feed = "Frost984/feeds/group-project.bbc-buzzer";
-const led_feed = "Frost984/feeds/group-project.bbc-led";
-const temp_feed = "Frost984/feeds/group-project.bbc-temp";
-const switch_feed = "Frost984/feeds/group-project.bbc-switch";
-const button_feed = "Frost984/feeds/group-project.bbc-button";
+export const relay_feed = "Frost984/feeds/group-project.bbc-relay";
+export const buzzer_feed = "Frost984/feeds/group-project.bbc-buzzer";
+export const led_feed = "Frost984/feeds/group-project.bbc-led";
+export const temp_feed = "Frost984/feeds/group-project.bbc-temp";
+export const switch_feed = "Frost984/feeds/group-project.bbc-switch";
+export const button_feed = "Frost984/feeds/group-project.bbc-button";
 
 const topics = [
   relay_feed,
@@ -29,7 +29,7 @@ const topics = [
   switch_feed,
   button_feed,
 ];
-var debug = false;
+var debug = true;
 mqtt_client.on("connect", () => {
   if (debug) {
     console.log("Connected");
@@ -40,10 +40,10 @@ mqtt_client.on("connect", () => {
     }
   });
 });
-var mqtt_callbacks = {};
+export const mqtt_callbacks: { [key: string]: (number: number) => void } = {};
 
 var debug = false;
-mqtt_client.on("message", (topic, payload) => {
+mqtt_client.on("message", (topic: string, payload: number) => {
   if (debug) {
     console.log("Received Message:", topic, payload.toString());
   }
@@ -52,13 +52,3 @@ mqtt_client.on("message", (topic, payload) => {
   }
 });
 
-module.exports = {
-  mqtt_client: mqtt_client,
-  relay_feed: relay_feed,
-  buzzer_feed: buzzer_feed,
-  led_feed: led_feed,
-  temp_feed: temp_feed,
-  switch_feed: switch_feed,
-  button_feed: button_feed,
-  mqtt_callbacks: mqtt_callbacks,
-};

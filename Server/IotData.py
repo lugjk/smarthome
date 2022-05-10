@@ -13,9 +13,9 @@ def requestDataAdafruit(device, start_time = None, end_time = None, limit = None
     response = requests.get(req).json()
     return [(ele["value"], ele["created_at"]) for ele in response]
 
-def getActiveTimeSwitch(devicename ,start_time, end_time):
-    data = requestDataAdafruit(devicename, start_time, end_time)
-    value = requestDataAdafruit(devicename, end_time=start_time, limit=1)[0][0]
+def getActiveTimeSwitch(devicecode ,start_time, end_time):
+    data = requestDataAdafruit(devicecode, start_time, end_time)
+    value = requestDataAdafruit(devicecode, end_time=start_time, limit=1)[0][0]
     start = datetime.strptime(start_time, "%Y-%m-%dT%H:%M:%SZ")
     totalTime = timedelta()
 

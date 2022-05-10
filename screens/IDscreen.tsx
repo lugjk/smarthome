@@ -1,5 +1,5 @@
 import { Alert, StyleSheet } from "react-native";
-import { View } from "../components/Themed";
+import { Text, View } from "../components/Themed";
 import { RootStackScreenProps } from "../types";
 import {
   Box,
@@ -13,6 +13,7 @@ import {
 } from "native-base";
 import { useState } from "react";
 import { IAuth2, IAuth } from "../models/models";
+import { user } from "../context/userContext";
 
 export default function IDscreen({
   navigation,
@@ -24,17 +25,37 @@ export default function IDscreen({
   });
 
   const onSubmit = () => {
-    if (changeauth.username === "123" && changeauth.password === "123") {
-      console.log("Successfully  change password", changeauth);
-      Alert.alert("Alert Title", "Successfully change password", [
-        { text: "OK", onPress: () => console.log("OK Pressed") },
-      ]);
-    } else {
-      Alert.alert("Alert Title", "Change password failed", [
-        { text: "OK", onPress: () => console.log("OK Pressed") },
-      ]);
-      console.log("Change password failed", changeauth);
-    }
+    
+      fetch('http://127.0.0.1:5000/users/', {
+        method: "PUT",
+        headers: { 'Content-Type': 'application/json', "Authorization": user.token },
+        body: JSON.stringify({
+          password: changeauth.password,
+          newpassword: changeauth.changepassword,
+        })
+      }).then((response) => {
+        if (response.ok) {
+          alert("Successfully change password");
+        } else {
+          throw new Error("Invalid email or password")
+        }
+      }).catch((error) => {
+        alert(error)
+      });
+       
+       
+
+    // if (changeauth.username === "123" && changeauth.password === "123") {
+    //   console.log("Successfully  change password", changeauth);
+    //   Alert.alert("Alert Title", "Successfully change password", [
+    //     { text: "OK", onPress: () => console.log("OK Pressed") },
+    //   ]);
+    // } else {
+    //   Alert.alert("Alert Title", "Change password failed", [
+    //     { text: "OK", onPress: () => console.log("OK Pressed") },
+    //   ]);
+    //   console.log("Change password failed", changeauth);
+    // }
   };
 
   return (
@@ -43,19 +64,8 @@ export default function IDscreen({
         <Box safeArea p="2" py="8" w="90%" maxW="290">
           <VStack space={3} mt="5">
             <FormControl>
-              <FormControl.Label>Username</FormControl.Label>
-              <Input
-                value={changeauth.username}
-                onChangeText={(value) => {
-                  setAuth((prev) => ({
-                    ...prev,
-                    username: value,
-                  }));
-                }}
-              />
-              {/* {!auth.username && <Text>vui long nhap username</Text>} */}
-            </FormControl>
-            <FormControl>
+              {/* <View style={align} */}
+              <FormControl.Label>{user.username}</FormControl.Label>
               <FormControl.Label>Password</FormControl.Label>
               <Input
                 type="password"

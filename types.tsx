@@ -9,7 +9,7 @@ import {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
+import {IDevice, IRoom} from "./models/models"
 declare global {
   namespace ReactNavigation {
     interface RootParamList extends RootStackParamList {}
@@ -17,7 +17,7 @@ declare global {
 }
 
 export type RootTabParamList = {
-  TabHome: { id: number };
+  TabHome: { room: IRoom };
   Setting: undefined;
 };
 
@@ -29,8 +29,8 @@ export type RootStackParamList = {
   Login: undefined;
   IDscreen: undefined;
   Menu: undefined;
-  Graph1Room1: { id: number; idRoom: number };
-  AllRoomScreen: undefined;
+  Graph: { device: IDevice};
+  AllRoomScreen: undefined
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

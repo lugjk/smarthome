@@ -3,7 +3,6 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   NavigationContainer,
   DefaultTheme,
@@ -11,11 +10,8 @@ import {
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import * as React from "react";
-import { ColorSchemeName, Pressable, TouchableOpacity } from "react-native";
-
-import Colors from "../constants/Colors";
-import useColorScheme from "../hooks/useColorScheme";
-import Graph1Room1 from "../screens/Graph1Room1";
+import { ColorSchemeName, TouchableOpacity } from "react-native";
+import Graph from "../screens/Graph";
 import IDscreen from "../screens/IDscreen";
 
 import LoginScreen from "../screens/LoginScreen";
@@ -26,8 +22,8 @@ import Setting from "../screens/Setting";
 import { RootStackParamList } from "../types";
 import LinkingConfiguration from "./LinkingConfiguration";
 import TabHomeScreen from "../screens/TabHomeScreen";
-import { Text } from "../components/Themed";
 import AntDesign from "@expo/vector-icons/AntDesign";
+
 export default function Navigation({
   colorScheme,
 }: {
@@ -102,10 +98,10 @@ function RootNavigator() {
         })}
       />
       <Stack.Screen
-        name="Graph1Room1"
-        component={Graph1Room1}
+        name="Graph"
+        component={Graph}
         options={({ navigation }) => ({
-          title: "Graph1",
+          title: "Graph",
           headerBackVisible: true,
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate("Setting")}>

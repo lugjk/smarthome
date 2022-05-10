@@ -13,7 +13,10 @@ import {
   Link,
 } from "native-base";
 import { useState } from "react";
-import { IAuth } from "../models/models";
+import { IAuth, User } from "../models/models";
+import { user } from "../context/userContext";
+
+
 
 export default function LoginScreen({
   navigation,
@@ -24,18 +27,43 @@ export default function LoginScreen({
   });
 
   const onSubmit = () => {
-    if (auth.username === "123" && auth.password === "123") {
-      console.log("Dang nhap thanh cong", auth);
-      Alert.alert("Alert Title", "Dang nhap thanh cong", [
-        { text: "OK", onPress: () => console.log("OK Pressed") },
-      ]);
-      navigation.navigate("AllRoomScreen");
-    } else {
-      Alert.alert("Alert Title", "Dang nhap that bai", [
-        { text: "OK", onPress: () => console.log("OK Pressed") },
-      ]);
-      console.log("Dang nhap that bai", auth);
-    }
+
+    fetch('http://127.0.0.1:5000/users/login', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: auth.username,
+        password: auth.password
+      })
+    }).then((response) => {
+      if (response.ok) return response.json()
+      else if(response.status == 404) throw new Error("Invalid email or password")
+    })
+      .then((json) => {
+        user._id = json.data._id
+        user.token = json.data.token
+        user.email = json.data.email 
+        user.username = json.data.name
+        navigation.navigate("AllRoomScreen");
+    })
+    .catch((error) => {
+      alert(error)
+    });
+
+    // if (auth.username === "123" && auth.password === "123") {
+    //   Alert.alert("Alert Title", "Dang nhap thanh cong", [
+    //     { text: "OK", onPress: () => console.log("OK Pressed") },
+    //   ]);
+    //   navigation.navigate("AllRoomScreen");
+    // } else {
+    //   Alert.alert("Alert Title", "Dang nhap that bai", [
+    //     { text: "OK", onPress: () => console.log("OK Pressed") },
+    //   ]);
+    //   console.log("Dang nhap that bai", auth);
+    // }
   };
 
   return (
@@ -90,17 +118,18 @@ export default function LoginScreen({
                   }));
                 }}
               />
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => {
                   navigation.push("IDscreen");
                 }}
               >
                 <Text>Change Password?</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </FormControl>
-            <Button mt="2" colorScheme="indigo" onPress={onSubmit}>
-              Sign in
-            </Button>
+                  <Button mt="2" colorScheme="indigo" onPress={onSubmit}>
+                    Sign in
+                  </Button>
+
           </VStack>
         </Box>
       </Center>

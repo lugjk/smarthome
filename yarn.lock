@@ -2634,6 +2634,13 @@
   "resolved" "https://registry.npmjs.org/@types/lodash/-/lodash-4.14.180.tgz"
   "version" "4.14.180"
 
+"@types/mqtt@^2.5.0":
+  "integrity" "sha512-n+0/ErBin30j+UbhcHGK/STjHjh65k85WNR6NlUjRG0g9yctpF12pS+SOkwz0wmp+7momAo9Cyi4Wmvy8UsCQg=="
+  "resolved" "https://registry.npmjs.org/@types/mqtt/-/mqtt-2.5.0.tgz"
+  "version" "2.5.0"
+  dependencies:
+    "mqtt" "*"
+
 "@types/node@*":
   "integrity" "sha512-8FwbVoG4fy+ykY86XCAclKZDORttqE5/s7dyWZKLXTdv3vRy5HozBEinG5IqhvPXXzIZEcTVbuHlQEI6iuwcmw=="
   "resolved" "https://registry.npmjs.org/@types/node/-/node-17.0.22.tgz"
@@ -6479,7 +6486,7 @@
     "debug" "^4.1.1"
     "process-nextick-args" "^2.0.1"
 
-"mqtt@^4.3.7":
+"mqtt@*", "mqtt@^4.3.7":
   "integrity" "sha512-ew3qwG/TJRorTz47eW46vZ5oBw5MEYbQZVaEji44j5lAUSQSqIEoul7Kua/BatBW0H0kKQcC9kwUHa1qzaWHSw=="
   "resolved" "https://registry.npmjs.org/mqtt/-/mqtt-4.3.7.tgz"
   "version" "4.3.7"

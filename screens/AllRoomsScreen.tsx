@@ -1,11 +1,12 @@
 import { Switch } from "native-base";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 import { Text, View } from "../components/Themed";
-import { IRoom } from "../models/models";
+import { IRoom, User } from "../models/models";
 import Rooms from "../mooks/rooms";
 import { RootStackScreenProps } from "../types";
+import { user } from "../context/userContext";
 
 const convertTwoRow = (items: any[], amountInRow: number = 0) => {
   if (!items || items.length === 0) {
@@ -25,16 +26,29 @@ const convertTwoRow = (items: any[], amountInRow: number = 0) => {
 export default function AllRoomScreen({
   navigation,
 }: RootStackScreenProps<"AllRoomScreen">) {
-  const [timesPressed, setTimesPressed] = useState(0);
-
-  let textLog = "";
-  if (timesPressed > 1) {
-    textLog = timesPressed + "x onPress";
-  } else if (timesPressed > 0) {
-    textLog = "onPress";
+  const [rooms, setRooms] = useState<IRoom[]>([])
+  
+  const getRooms = async () => {
+     try {
+      const response = await fetch('http://127.0.0.1:5000/rooms', {
+        method: "GET",
+        headers: {'Content-Type': 'application/json', "Authorization": user.token},
+      });
+       const json = await response.json();
+       json.data.forEach((value: IRoom) => Rooms.push(value))
+       setRooms(json.data)
+       
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
   }
 
-  const data = convertTwoRow(Rooms, 2);
+  useEffect(() => {
+    getRooms()
+  }, []);
+
+  const data = convertTwoRow(rooms, 2);
   return (
     <View style={styles.relative}>
       <View style={styles.container}>
@@ -47,12 +61,12 @@ export default function AllRoomScreen({
                   onPress={() => {
                     navigation.navigate("Root", {
                       screen: "TabHome",
-                      params: { id: item.id },
+                      params: { room: item },
                     });
                   }}
                   style={styles.item}
                 >
-                  <Text>{item.title}</Text>
+                  <Text>{item.name}</Text>
                 </TouchableOpacity>
               ))}
             </View>

@@ -1,19 +1,15 @@
-export interface IDivice {
+export interface IDevice {
   code: string;
   name: string;
-  type: string;
+  category: string;
   isON: boolean;
-  time6: number;
-  time12: number;
-  time18: number;
-  time24: number;
-  id: number;
+  _id: string;
 }
 
 export interface IRoom {
-  title: string;
-  id: number;
-  divices: IDivice[];
+  name: string;
+  _id: string;
+  devices: IDevice[];
 }
 
 export interface IAuth {
@@ -24,4 +20,11 @@ export interface IAuth2 {
   username: string;
   password: string;
   changepassword: string;
+}
+
+export interface User {
+  _id: string;
+  token: string;
+  username: string;
+  email: string;
 }

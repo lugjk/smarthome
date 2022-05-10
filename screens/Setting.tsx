@@ -3,7 +3,7 @@ import { useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 
 import { Text, View } from "../components/Themed";
-import { IDivice } from "../models/models";
+import { IDevice } from "../models/models";
 import { RootStackScreenProps } from "../types";
 
 export default function Setting({
@@ -27,7 +27,7 @@ export default function Setting({
             }}
             style={styles.item}
           >
-            <Text>My ID</Text>
+            <Text>Change password</Text>
           </TouchableOpacity>
         </View>
 

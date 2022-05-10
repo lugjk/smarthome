@@ -4,10 +4,11 @@ import { Pressable, StyleSheet, TouchableOpacity } from "react-native";
 
 import AppIntroSlider from "../components/SliderIntro/Sliderintro";
 import { Text, View } from "../components/Themed";
-import { IDivice, IRoom } from "../models/models";
-import divices from "../mooks/devices";
+import { IDevice, IRoom } from "../models/models";
 import Rooms from "../mooks/rooms";
 import { RootTabScreenProps } from "../types";
+import { user } from "../context/userContext"
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const convertTwoRow = (items: any[], amountInRow: number = 0) => {
   if (!items || items.length === 0) {
@@ -30,17 +31,34 @@ export default function TabHomeScreen({
   const [timesPressed, setTimesPressed] = useState(0);
   const { params }: any = route.params;
   const [room, setRoom] = useState<IRoom>({
-    id: 0,
-    title: "",
-    divices: [],
+    _id: "",
+    name: "",
+    devices: [],
   });
 
+  const getRoom = async () => {
+    try {
+        const response = await fetch('http://127.0.0.1:5000/rooms/' + params.room.name, {
+          method: "GET",
+          headers: {'Content-Type': 'application/json', "Authorization": user.token},
+        });
+        
+        const json = await response.json();
+        setRoom(json.data)
+
+      
+        } catch (error) {
+          console.error(error);
+        } finally {
+          // setLoading(false);
+        }
+  }
+  
   useEffect(() => {
-    const filter = Rooms.find((item) => item.id === params.id);
-    if (filter) {
-      setRoom(filter);
-    }
-  }, [params.id]);
+    getRoom()
+  }, [params.room._id]);
+
+
 
   let textLog = "";
   if (timesPressed > 1) {
@@ -49,9 +67,9 @@ export default function TabHomeScreen({
     textLog = "onPress";
   }
 
-  const toggleSwitch = (id: number, value: boolean) => {
-    room.divices.map((y) => {
-      if (y.id === id) {
+  const toggleSwitch = (id: string, value: boolean) => {
+    room.devices.map((y) => {
+      if (y._id === id) {
         y.isON = !value;
       }
       return y;
@@ -59,41 +77,41 @@ export default function TabHomeScreen({
     setRoom(room);
   };
 
-  const rdevices = convertTwoRow(divices, 2);
+  const rdevices = convertTwoRow(room.devices, 2);
+
+  // console.log(devices)
 
   const renderItem = ({ item }: any) => {
     return (
       <View style={{ backgroundColor: "#f2f4f5" }}>
-        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.title}>{item.name}</Text>
         {rdevices.map((rows: any, index: number) => {
           return (
             <View style={styles.rowItem} key={index}>
-              {rows.map((item: IDivice, index: number) => {
+              {rows.map((item: IDevice, index: number) => {
                 return (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => {
-                      navigation.navigate("Graph1Room1", {
-                        screen: "Graph1Room1",
+                  <View style={styles.item}>
+                    <TouchableOpacity onPress={() => {
+                      navigation.navigate("Graph", {
+                        screen: "Graph",
                         params: {
-                          id: item.id,
-                          idRoom: room.id,
+                          device: item
                         },
                       });
-                    }}
-                    style={styles.item}
-                  >
-                    <Text>{item.code}</Text>
+                    }} style={{ marginLeft: 'auto', paddingRight: "20px", paddingTop: "10px" }}>
+                        <AntDesign name="barschart" size={24} color="black" />
+                      </TouchableOpacity>
+                    <Text>{item.name}</Text>
                     <View style={styles.containerbutton}>
                       <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }}
                         thumbColor={item.isON ? "#f5dd4b" : "#f4f3f4"}
                         ios_backgroundColor="#3e3e3e"
-                        onValueChange={(value) => toggleSwitch(item.id, value)}
+                        onValueChange={(value) => toggleSwitch(item._id, value)}
                         value={item.isON}
                       />
                     </View>
-                  </TouchableOpacity>
+                  </View>
                 );
               })}
             </View>
@@ -106,11 +124,11 @@ export default function TabHomeScreen({
   return (
     <View style={styles.relative}>
       <View style={styles.container}>
-        {room.id ? (
+        {room._id ? (
           <AppIntroSlider
             renderItem={renderItem}
             data={Rooms}
-            initialIndex={Rooms.findIndex((item) => item.id === room.id)}
+            initialIndex={Rooms.findIndex((item) => item._id === room._id)}
           />
         ) : null}
       </View>
@@ -145,6 +163,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    padding: "10px",
+    paddingBottom: "30px",
     fontWeight: "bold",
     backgroundColor: "#f2f4f5",
   },

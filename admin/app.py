@@ -90,21 +90,23 @@ class ListDevices(Frame):
         self.context = context
 
         self.tree = ttk.Treeview(self)
-        self.tree.grid(row=1, columnspan=4)
+        self.tree.grid(row=1, columnspan=5)
 
-        self.tree['columns']= ('Id', 'Name','Category')
+        self.tree['columns']= ('Id', 'Name', 'Code','Category')
         self.tree.column("#0", width=0,  stretch=NO)
         self.tree.column("Id",anchor=CENTER, width=200)
         self.tree.column("Name",anchor=CENTER, width=200)
+        self.tree.column("Code",anchor=CENTER, width=200)
         self.tree.column("Category",anchor=CENTER, width=200)
 
         self.tree.heading("#0",text="",anchor=CENTER)
         self.tree.heading("Id",text="ID",anchor=CENTER)
         self.tree.heading("Name",text="Name",anchor=CENTER)
+        self.tree.heading("Code",text="Code",anchor=CENTER)
         self.tree.heading("Category",text="Category",anchor=CENTER)
 
         for i, device in enumerate(Devices().get_by_user_id(context["user_id"])):
-            self.tree.insert(parent='', index='end', iid=i, text='', values=(device["_id"], device["name"], device["category"]))
+            self.tree.insert(parent='', index='end', iid=i, text='', values=(device["_id"], device["name"], device["code"], device["category"]))
         
         self.tree.bind('<<TreeviewSelect>>', self.item_selected) 
 
@@ -123,15 +125,18 @@ class ListDevices(Frame):
         newWindow.title("Update infomation")
 
         Label(newWindow, text="Name").grid(row=0, column=0)
-        Label(newWindow, text="Catelogy").grid(row=1, column=0)
+        Label(newWindow, text="Code").grid(row=1, column=0)
+        Label(newWindow, text="Catelogy").grid(row=2, column=0)
 
         inputName = Entry(newWindow, width=70)
         inputName.grid(row=0, column=1, columnspan=2)
+        inputCode = Entry(newWindow, width=70)
+        inputCode.grid(row=1, column=1, columnspan=2)
         inputCategory = Entry(newWindow, width=70)
-        inputCategory.grid(row=1, column=1, columnspan=2)
+        inputCategory.grid(row=2, column=1, columnspan=2)
 
-        def handle_add_button():
-            Devices().update(item, inputName.get(), inputCategory.get())
+        def handle_update_button():
+            Devices().update(item, inputName.get(), inputCode.get(),inputCategory.get())
             newWindow.destroy()
             self.controller.show_frame(ListDevices, self.context)
 
@@ -140,7 +145,7 @@ class ListDevices(Frame):
             newWindow.destroy()
             self.controller.show_frame(ListDevices, self.context)
 
-        Button(newWindow, text="Update", command=lambda: handle_add_button()).grid(row=4, column=1)
+        Button(newWindow, text="Update", command=lambda: handle_update_button()).grid(row=4, column=1)
         Button(newWindow, text="Delete", command=lambda: handle_delete_button()).grid(row=4, column=2)
 
     
@@ -149,19 +154,22 @@ class ListDevices(Frame):
         newWindow.title("Add Device")
 
         Label(newWindow, text="Name").grid(row=0)
-        Label(newWindow, text="Catelogy").grid(row=1)
+        Label(newWindow, text="Code").grid(row=1)
+        Label(newWindow, text="Catelogy").grid(row=2)
 
         inputName = Entry(newWindow, width=70)
         inputName.grid(row=0, column=1)
+        inputCode = Entry(newWindow, width=70)
+        inputCode.grid(row=1, column=1, columnspan=2)
         inputCategory = Entry(newWindow, width=70)
-        inputCategory.grid(row=1, column=1)
+        inputCategory.grid(row=2, column=1)
 
         def handle_add_button():
-            Devices().create(inputName.get(), inputCategory.get(), self.context["user_id"])
+            Devices().create(inputName.get(), inputCode.get(),inputCategory.get(), self.context["user_id"])
             newWindow.destroy()
             self.controller.show_frame(ListDevices, self.context)
 
-        Button(newWindow, text="Add", command=lambda: handle_add_button()).grid(row=2, column=1)
+        Button(newWindow, text="Add", command=lambda: handle_add_button()).grid(row=3, column=1)
 
 
     def go_back(self):
@@ -183,7 +191,7 @@ class ListDevices(Frame):
         inputPassword.grid(row=2, column=1)
 
         def handle_add_button():
-            User().update(self.context["user_id"], inputName.get(), inputEmail.get(), inputPassword.get())
+            User().changePassword(self.context["user_id"], inputName.get(), inputEmail.get(), inputPassword.get())
             newWindow.destroy()
             self.controller.show_frame(ListUser)
 
@@ -263,7 +271,7 @@ class ListRooms(Frame):
         inputPassword.grid(row=2, column=1)
 
         def handle_add_button():
-            User().update(self.context["user_id"], inputName.get(), inputEmail.get(), inputPassword.get())
+            User().changePassword(self.context["user_id"], inputName.get(), inputEmail.get(), inputPassword.get())
             newWindow.destroy()
             self.controller.show_frame(ListUser)
 
@@ -283,20 +291,22 @@ class ListDevicesOfRoom(Frame):
         self.tree = ttk.Treeview(self)
         self.tree.grid(row=1, columnspan=2)
 
-        self.tree['columns']= ('Id', 'Name','Category')
+        self.tree['columns']= ('Id', 'Name', 'Code','Category')
         self.tree.column("#0", width=0,  stretch=NO)
         self.tree.column("Id",anchor=CENTER, width=200)
         self.tree.column("Name",anchor=CENTER, width=200)
+        self.tree.column("Code",anchor=CENTER, width=200)
         self.tree.column("Category",anchor=CENTER, width=200)
 
         self.tree.heading("#0",text="",anchor=CENTER)
         self.tree.heading("Id",text="ID",anchor=CENTER)
         self.tree.heading("Name",text="Name",anchor=CENTER)
+        self.tree.heading("Code",text="Code",anchor=CENTER)
         self.tree.heading("Category",text="Category",anchor=CENTER)
 
         for i, device in enumerate(Rooms().get_by_id(context["room_id"])["devices"]):
             device = Devices().get_by_id(device)
-            self.tree.insert(parent='', index='end', iid=i, text='', values=(device["_id"], device["name"], device["category"]))
+            self.tree.insert(parent='', index='end', iid=i, text='', values=(device["_id"], device["name"], device["code"], device["category"]))
         
         self.tree.bind('<<TreeviewSelect>>', self.item_selected) 
 
@@ -327,19 +337,21 @@ class ListDevicesOfRoom(Frame):
         tree = ttk.Treeview(newWindow)
         tree.grid(row=1, columnspan=2)
 
-        tree['columns']= ('Id', 'Name','Category')
+        tree['columns']= ('Id', 'Name', 'Code','Category')
         tree.column("#0", width=0,  stretch=NO)
         tree.column("Id",anchor=CENTER, width=200)
         tree.column("Name",anchor=CENTER, width=200)
+        tree.column("Code",anchor=CENTER, width=200)
         tree.column("Category",anchor=CENTER, width=200)
 
         tree.heading("#0",text="",anchor=CENTER)
         tree.heading("Id",text="ID",anchor=CENTER)
         tree.heading("Name",text="Name",anchor=CENTER)
+        tree.heading("Code",text="Code",anchor=CENTER)
         tree.heading("Category",text="Category",anchor=CENTER)
 
         for i, device in enumerate(Devices().get_by_user_id(self.context["user_id"])):
-            tree.insert(parent='', index='end', iid=i, text='', values=(device["_id"], device["name"], device["category"]))
+            tree.insert(parent='', index='end', iid=i, text='', values=(device["_id"], device["name"], device["code"], device["category"]))
 
         def handle_item_selelec(event):
             item = tree.selection()[0]

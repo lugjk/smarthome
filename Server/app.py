@@ -1,17 +1,19 @@
-from traceback import print_tb
 import jwt, os
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from multiprocessing import Process
 from UpdateData import loopUpdate
 # from validate import validate_device, validate_email_and_password, validate_user
 
 app = Flask(__name__)
+CORS(app)
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'this is a secret'
 print(SECRET_KEY)
 app.config['SECRET_KEY'] = SECRET_KEY
 
 from Models import Devices, User, Rooms
 from Auth import token_required
+
 
 @app.route("/", methods=["GET"])
 def hello():
@@ -109,17 +111,12 @@ def get_current_user(current_user):
 def update_user(current_user):
     try:
         user = request.json
-        if user.get("name") or user.get("email") or user.get("password"):
-            user = User().update(current_user["_id"], user["name"], user["email"], user["password"])
-            return jsonify({
-                "message": "successfully updated account",
-                "data": user
-            }), 201
-        return {
-            "message": "Invalid data, you can only update your account name, email or password!",
-            "data": None,
-            "error": "Bad Request"
-        }, 400
+        user = User().changePassword(current_user["_id"], user["password"], user["newpassword"])
+        print(user)
+        return jsonify({
+            "message": "successfully updated account",
+            "data": user
+        }), 201
     except Exception as e:
         return jsonify({
             "message": "failed to update account",
@@ -203,7 +200,7 @@ def get_devices(current_user):
 @token_required
 def get_device(current_user, device_name):
     try:
-        device = Devices().get_by_name(device_name)
+        device = Devices().get_by_code(device_name)
         if not device or device["user_id"] != current_user["_id"]:
             return {
                 "message": "device not found for user",
@@ -225,7 +222,7 @@ def get_device(current_user, device_name):
 @token_required
 def update_device(current_user, device_name):
     try:
-        device = Devices().get_by_name(device_name)
+        device = Devices().get_by_code(device_name)
         if not device or device["user_id"] != current_user["_id"]:
             return {
                 "message": "device not found for user",
@@ -251,7 +248,7 @@ def update_device(current_user, device_name):
 @token_required
 def delete_device(current_user, device_name):
     try:
-        device = Devices().get_by_name(device_name)
+        device = Devices().get_by_code(device_name)
         if not device or device["user_id"] != current_user["_id"]:
             return {
                 "message": "device not found for user",
@@ -271,22 +268,23 @@ def delete_device(current_user, device_name):
         }), 400
 
 
-@app.route("/devices/data", methods=["POST"])
+@app.route("/devices/data/<device_id>", methods=["GET"])
 @token_required
-def get_data_device(current_user):
+def get_data_device(current_user, device_id):
+    print(device_id)
     try:
-        device_id, start_time, end_time = request.json["_id"], request.json["start_time"], request.json["end_time"]
-        device = Devices().get_by_name(device_id)
+        # device_id = request.json["_id"]
+        device = Devices().get_by_id(device_id)
         if not device or device["user_id"] != current_user["_id"]:
             return {
                 "message": "device not found for user",
                 "data": None,
                 "error": "Not Found"
             }, 404
-        timeused = Devices().get_timeused_by_name(device_id, start_time, end_time)
+        timeused = Devices().get_timeused_of_day(device_id)
         return jsonify({
             "message": "successfully retrieved a device",
-            "data": {"timeused": timeused}
+            "data": timeused
         }), 201
     except Exception as e:
         return jsonify({
@@ -433,5 +431,5 @@ def forbidden(e):
 
 
 if __name__ == "__main__":
-    p = Process(target=loopUpdate).start()
+    Process(target=loopUpdate).start()
     app.run(debug=True)
