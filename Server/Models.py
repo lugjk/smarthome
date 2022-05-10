@@ -7,6 +7,118 @@ from datetime import timedelta, datetime
 DATABASE_URL = 'mongodb://localhost:27017/'
 client = MongoClient(DATABASE_URL)
 db = client.Smarthome
+DATEFORMAT = "%Y-%m-%dT%H:%M:%SZ"
+
+class Devices:
+    """Devices Model"""
+    def __init__(self):
+        return
+
+    def create(self, name="", code="", category="", user_id=""):
+        """Create a new device"""
+        device = self.get_by_user_id_and_code(user_id, name)
+        if device:
+            return
+        new_device = db.Devices.insert_one(
+            {
+                "name": name,
+                "code": code,
+                "category": category,
+                "user_id": user_id
+            }
+        )
+        return self.get_by_id(new_device.inserted_id)
+
+    def get_all(self):
+        """Get all devices"""
+        devices = db.Devices.find()
+        return [{**device, "_id": str(device["_id"])} for device in devices]
+
+    def get_by_id(self, device_id):
+        """Get a device by id"""
+        device = db.Devices.find_one({"_id": bson.ObjectId(device_id)})
+        if not device:
+            return
+        device["_id"] = str(device["_id"])
+        return device
+
+    def get_by_code(self, device_code):
+        """Get a device by code"""
+        device = db.Devices.find_one({"code": device_code})
+        if not device:
+            return
+        device["_id"] = str(device["_id"])
+        return device
+
+    def get_by_user_id(self, user_id):
+        """Get all devices created by a user"""
+        devices = db.Devices.find({"user_id": user_id})
+        return [{**device, "_id": str(device["_id"])} for device in devices]
+
+    def get_by_user_id_and_code(self, user_id, code):
+        """Get a devices given its code and id"""
+        device = db.Devices.find_one({"user_id": user_id, "code": code})
+        if not device:
+            return
+        device["_id"] = str(device["_id"])
+        return device
+
+    def get_by_category(self, category):
+        """Get all devices by category"""
+        devices = db.Devices.find({"category": category})
+        return [device for device in devices]
+
+    def get_by_user_id_and_category(self, user_id, category):
+        """Get all devices by category for a particular user"""
+        devices = db.Devices.find({"user_id": user_id, "category": category})
+        return [{**device, "_id": str(device["_id"])} for device in devices]
+
+    def update(self, device_id, name="" ,code="", category=""):
+        """Update a device"""
+        data={}
+        if name: data["name"]=name
+        if code: data["code"]=code
+        if category: data["category"]=category
+
+        device = db.Devices.update_one(
+            {"_id": bson.ObjectId(device_id)},
+            {
+                "$set": data
+            }
+        )
+        device = self.get_by_id(device_id)
+        return device
+
+    def delete(self, device_id):
+        """Delete a device"""
+        db.TimeUsed.delete_many({"Sensor": device_id})
+        device = db.Devices.delete_one({"_id": bson.ObjectId(device_id)})
+        return device
+
+    def delete_by_user_id(self, user_id):
+        """Delete all devices created by a user"""
+        device = db.Devices.delete_many({"user_id": user_id})
+        return device
+    
+    def get_timeused_by_id(self, device_id, time_start, time_end):
+        """Get time used of device from time_start to time_end"""
+        data = db.TimeUsed.find({
+                        "Sensor": device_id,
+                        "Timestamp": {
+                            "$gt": datetime.strptime(time_start, DATEFORMAT),
+                            "$lte": datetime.strptime(time_end, DATEFORMAT)
+                        }
+                    })
+        total = timedelta()
+        for d in data:
+            d = datetime.strptime(d["Value"], "%H:%M:%S")
+            total += timedelta(hours=d.hour, minutes=d.minute, seconds=d.second)
+        return total.seconds/60
+
+    def get_timeused_of_day(self, device_id):
+        now = datetime.now().date()
+        twohour = timedelta(hours=2)
+        return [self.get_timeused_by_id(device_id, (now+twohour*i).strftime(DATEFORMAT), (now+twohour*(i+2)).strftime(DATEFORMAT)) for i in range(0,24,2)]
 
 
 class Rooms:
@@ -22,7 +134,7 @@ class Rooms:
         new_room = db.Rooms.insert_one(
             {
                 "name": name,
-                "user_id": bson.ObjectId(user_id),
+                "user_id": user_id,
                 "devices": []
             }
         )
@@ -43,15 +155,16 @@ class Rooms:
 
     def get_by_user_id(self, user_id):
         """Get all rooms created by a user"""
-        rooms = db.Rooms.find({"user_id": bson.ObjectId(user_id)})
+        rooms = db.Rooms.find({"user_id": user_id})
         return [{**room, "_id": str(room["_id"])} for room in rooms]
 
     def get_by_user_id_and_name(self, user_id, name):
         """Get a rooms given its name and id"""
-        room = db.Rooms.find_one({"user_id": bson.ObjectId(user_id), "name": name})
+        room = db.Rooms.find_one({"user_id": user_id, "name": name})
         if not room:
             return
         room["_id"] = str(room["_id"])
+        room["devices"] = [Devices().get_by_id(d) for d in room["devices"]]
         return room
 
     def update(self, room_id, name="", devices=None):
@@ -72,7 +185,7 @@ class Rooms:
     def addDevice(self, room_id, device_id):
         """Add a device to room"""
         data=self.get_by_id(room_id)
-        data["devices"].append(bson.ObjectId(device_id))
+        data["devices"].append(device_id)
         del data["_id"]
 
         room = db.Rooms.update_one(
@@ -87,7 +200,7 @@ class Rooms:
     def deleteDevice(self, room_id, device_id):
         """Add a device to room"""
         data=self.get_by_id(room_id)
-        data["devices"].remove(bson.ObjectId(device_id))
+        data["devices"].remove(device_id)
         del data["_id"]
 
         room = db.Rooms.update_one(
@@ -106,113 +219,9 @@ class Rooms:
 
     def delete_by_user_id(self, user_id):
         """Delete all rooms created by a user"""
-        room = db.Rooms.delete_many({"user_id": bson.ObjectId(user_id)})
+        room = db.Rooms.delete_many({"user_id": user_id})
         return room
     
-class Devices:
-    """Devices Model"""
-    def __init__(self):
-        return
-
-    def create(self, name="", category="", user_id=""):
-        """Create a new device"""
-        device = self.get_by_user_id_and_name(user_id, name)
-        if device:
-            return
-        new_device = db.Devices.insert_one(
-            {
-                "name": name,
-                "category": category,
-                "user_id": bson.ObjectId(user_id)
-            }
-        )
-        return self.get_by_id(new_device.inserted_id)
-
-    def get_all(self):
-        """Get all devices"""
-        devices = db.Devices.find()
-        return [{**device, "_id": str(device["_id"])} for device in devices]
-
-    def get_by_id(self, device_id):
-        """Get a device by id"""
-        device = db.Devices.find_one({"_id": bson.ObjectId(device_id)})
-        if not device:
-            return
-        device["_id"] = str(device["_id"])
-        return device
-
-    def get_by_name(self, device_name):
-        """Get a device by name"""
-        device = db.Devices.find_one({"name": device_name})
-        if not device:
-            return
-        device["_id"] = str(device["_id"])
-        return device
-
-    def get_by_user_id(self, user_id):
-        """Get all devices created by a user"""
-        devices = db.Devices.find({"user_id": bson.ObjectId(user_id)})
-        return [{**device, "_id": str(device["_id"])} for device in devices]
-
-    def get_by_user_id_and_name(self, user_id, name):
-        """Get a devices given its name and id"""
-        device = db.Devices.find_one({"user_id": bson.ObjectId(user_id), "name": name})
-        if not device:
-            return
-        device["_id"] = str(device["_id"])
-        return device
-
-    def get_by_category(self, category):
-        """Get all devices by category"""
-        devices = db.Devices.find({"category": category})
-        return [device for device in devices]
-
-    def get_by_user_id_and_category(self, user_id, category):
-        """Get all devices by category for a particular user"""
-        devices = db.Devices.find({"user_id": bson.ObjectId(user_id), "category": category})
-        return [{**device, "_id": str(device["_id"])} for device in devices]
-
-    def update(self, device_id, name="", category=""):
-        """Update a device"""
-        data={}
-        if name: data["name"]=name
-        if category: data["category"]=category
-
-        device = db.Devices.update_one(
-            {"_id": bson.ObjectId(device_id)},
-            {
-                "$set": data
-            }
-        )
-        device = self.get_by_id(device_id)
-        return device
-
-    def delete(self, device_id):
-        """Delete a device"""
-        db.TimeUsed.delete_many({"Sensor": bson.ObjectId(device_id)})
-        device = db.Devices.delete_one({"_id": bson.ObjectId(device_id)})
-        return device
-
-    def delete_by_user_id(self, user_id):
-        """Delete all devices created by a user"""
-        device = db.Devices.delete_many({"user_id": bson.ObjectId(user_id)})
-        return device
-    
-    def get_timeused_by_name(self, device_id, time_start, time_end):
-        """Get time used of device from time_start to time_end"""
-        print(device_id, datetime.strptime(time_start, "%Y-%m-%dT%H:%M:%SZ"), datetime.strptime(time_end, "%Y-%m-%dT%H:%M:%SZ"))
-        data = db.TimeUsed.find({
-                        "Sensor": bson.ObjectId(device_id),
-                        "Timestamp": {
-                            "$gt": datetime.strptime(time_start, "%Y-%m-%dT%H:%M:%SZ"),
-                            "$lte": datetime.strptime(time_end, "%Y-%m-%dT%H:%M:%SZ")
-                        }
-                    })
-        total = timedelta()
-        for d in data:
-            d = datetime.strptime(d["Value"], "%H:%M:%S")
-            total += timedelta(hours=d.hour, minutes=d.minute, seconds=d.second)
-        return str(total)
 
 class User:
     """User Model"""
@@ -221,7 +230,7 @@ class User:
 
     def create(self, name="", email="", password=""):
         """Create a new user"""
-        user = self.get_by_email(email)
+        user = self.get_by_username(email)
         if user:
             return
         new_user = db.Account.insert_one(
@@ -245,26 +254,25 @@ class User:
         if not user:
             return
         user["_id"] = str(user["_id"])
-        user.pop("password")
         return user
 
-    def get_by_email(self, email):
-        """Get a user by email"""
-        user = db.Account.find_one({"email": email, "active": True})
+    def get_by_username(self, name):
+        """Get a user by name"""
+        user = db.Account.find_one({"name": name, "active": True})
         if not user:
             return
         user["_id"] = str(user["_id"])
         return user
 
-    def update(self, user_id, name="", email="", password=""):
+    def changePassword(self, user_id, password="", newpassword=""):
         """Update a user"""
+        user = self.get_by_id(user_id)
+        print(user)
+        if not user or not check_password_hash(user["password"], password):
+            return
+
         data = {}
-        if name:
-            data["name"] = name
-        if email:
-            data["email"] = email
-        if password:
-            data["password"] = self.encrypt_password(password)
+        data["password"] = self.encrypt_password(newpassword)
 
         user = db.Account.update_one(
             {"_id": bson.ObjectId(user_id)},
@@ -295,10 +303,11 @@ class User:
         """Encrypt password"""
         return generate_password_hash(password)
 
-    def login(self, email, password):
+    def login(self, name, password):
         """Login a user"""
-        user = self.get_by_email(email)
+        user = self.get_by_username(name)
         if not user or not check_password_hash(user["password"], password):
             return
         user.pop("password")
         return user
+    
