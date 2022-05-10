@@ -1,3 +1,4 @@
+import datetime
 import jwt, os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -412,6 +413,15 @@ def delete_room(current_user, room_name):
             "error": str(e),
             "data": None
         }), 400
+
+@app.route("/ai/command", methods=["GET", "POST"])
+def recv_command():
+    #return jsonify({"text": "AI command"}), 200
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    voice_file = request.get_data()
+    with open(f"command_{current_time}.m4a", "wb") as f:
+        f.write(voice_file)
+    return "Command received", 200
 
 @app.errorhandler(403)
 def forbidden(e):
