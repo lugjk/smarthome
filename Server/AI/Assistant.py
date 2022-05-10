@@ -6,31 +6,37 @@ libav_path = os.path.join(os.getcwd(), "AI", "ffmpeg", "bin")
 os.environ["PATH"] += libav_path + os.pathsep
 from pydub import AudioSegment
 
+#Connect to Adafruit server
 from Adafruit_IO import MQTTClient
-
 ADAFRUIT_RELAY_FEED_ID = "group-project.bbc-relay"
 ADAFRUIT_LED_FEED_ID = "group-project.bbc-led"
 ADAFRUIT_FEED_ID = [ADAFRUIT_RELAY_FEED_ID, ADAFRUIT_LED_FEED_ID]
 
 def connected(client):
-    print("Connected succesfully")
     for id in ADAFRUIT_FEED_ID:
         client.subscribe(id)
 
+def message(client, feed_id, payload):
+    return
+
+
 ADAFRUIT_IO_USERNAME = "Frost984"
-ADAFRUIT_IO_KEY = "aio_qJaZ10pZlJnQMxtSk5tDB3v4NYj6"
+ADAFRUIT_IO_KEY = "aio_ksUL75UHkiWZ0ABtwWvBkHB3ywJP"
 client = MQTTClient(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
 client.on_connect = connected
+client.on_message = message
+client.connect()
+client.loop_background()
 
 
 #TODO: ASSIGMENT
 def turn_on_light():
-    client.publish(ADAFRUIT_LED_FEED_ID, "1")
+    client.publish(ADAFRUIT_RELAY_FEED_ID, "1")
     print("Đèn đã được mở!")
     return 0
 
 def turn_off_light():
-    client.publish(ADAFRUIT_LED_FEED_ID, "0")
+    client.publish(ADAFRUIT_RELAY_FEED_ID, "0")
     print("Đèn đã được tắt!")
     return 0
 
@@ -43,10 +49,10 @@ def close_door():
     return 0
 
 # Speech To Text: Chuyển đổi giọng nói bạn yêu cầu vào thành văn bản
-def get_text(file_handle):
+def get_text(file_name):
     #print("Begin recognizing...")
     r = sr.Recognizer()
-    with sr.WavFile(file_handle) as source:
+    with sr.WavFile(file_name) as source:
         audio = r.record(source)
         try:
             text = r.recognize_google(audio, language="vi-VN")
@@ -65,7 +71,8 @@ def convert_to_wav(file_path):
     with open(file_path, "rb") as f:
         track = AudioSegment.from_file(f, format='m4a')
         wav_handle = track.export(wav_filename, format='wav')
-        return wav_handle
+        wav_handle.close()
+        return wav_filename
 
 def exec_voice_command(file_path):
     '''
@@ -73,9 +80,9 @@ def exec_voice_command(file_path):
     :param file_path: path of the audio file that contains the voice command, in .m4a format
     :return:
     '''
-    wav_handle = convert_to_wav(file_path)
-    converted_text = get_text(wav_handle)
-    os.remove(wav_handle.name)
+    wav_filename = convert_to_wav(file_path)
+    converted_text = get_text(wav_filename)
+    os.remove(wav_filename)
     os.remove(file_path)
 
     light_on_tokens = ["mở đèn", "bật đèn", "sáng đèn"]
