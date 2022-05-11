@@ -1,3 +1,4 @@
+// import * as mqtt from "mqtt";
 import * as mqtt from "mqtt/dist/mqtt";
 
 const host = "io.adafruit.com";
@@ -10,7 +11,9 @@ export const mqtt_client = mqtt.connect(connectUrl, {
   clean: true,
   connectTimeout: 4000,
   username: "Frost984",
-  password: "aio_Hcfx22l7mvlbQW8IaxhpU0Q1511U",
+  
+  password: "",
+
   reconnectPeriod: 1000,
 });
 
@@ -42,7 +45,7 @@ mqtt_client.on("connect", () => {
 });
 export const mqtt_callbacks: { [key: string]: (number: number) => void } = {};
 
-var debug = false;
+// var debug = true;
 mqtt_client.on("message", (topic: string, payload: number) => {
   if (debug) {
     console.log("Received Message:", topic, payload.toString());

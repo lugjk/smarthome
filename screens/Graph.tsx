@@ -75,7 +75,7 @@ const Graph = ({ route }: RootStackScreenProps<"Graph">) => {
 
   return (
     <>
-      <Text style={styles.header}>Time spending of {device.name}</Text>
+      <Text style={styles.header}>Thời gian sử dụng của {device.name}</Text>
       <View style={styles.graph}>
         <BarChart
           data={{

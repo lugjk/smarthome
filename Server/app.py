@@ -5,6 +5,7 @@ from flask_cors import CORS
 from multiprocessing import Process
 from UpdateData import loopUpdate
 from AI import Assistant
+import requests
 # from validate import validate_device, validate_email_and_password, validate_user
 
 app = Flask(__name__)
@@ -350,6 +351,8 @@ def get_rooms(current_user):
 def get_room(current_user, room_name):
     try:
         room = Rooms().get_by_user_id_and_name(current_user["_id"], room_name)
+        # for i, d in enumerate(room["devices"]):
+        #     room["devices"][i]["isOn"] = requests.get('https://io.adafruit.com/api/v2/'+d["code"]).json()["last_value"] == "1"
         if not room:
             return {
                 "message": "room not found",
@@ -416,7 +419,8 @@ def delete_room(current_user, room_name):
         }), 400
 
 @app.route("/ai/command", methods=["POST"])
-def recv_command():
+@token_required
+def recv_command(current_user):
     #return jsonify({"text": "AI command"}), 200
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     voice_file = request.get_data()

@@ -13,7 +13,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
 import { server } from "../config/url";
-
+import {mqtt_callbacks, mqtt_client} from "../mqtt_connection";
 
 const convertTwoRow = (items: any[], amountInRow: number = 0) => {
   if (!items || items.length === 0) {
@@ -44,20 +44,19 @@ export default function TabHomeScreen({
 
   const getRoom = async () => {
     try {
-        const response = await fetch(server+'rooms/' + params.room.name, {
-          method: "GET",
-          headers: {'Content-Type': 'application/json', "Authorization": user.token},
-        });
-        
-        const json = await response.json();
-        setRoom(json.data)
+      const response = await fetch(server+'rooms/' + params.room.name, {
+        method: "GET",
+        headers: {'Content-Type': 'application/json', "Authorization": user.token},
+      });
+      const json = await response.json();
+      setRoom(json.data)
 
-      
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setLoading(false);
-        }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      console.log(room)
+      setLoading(!isLoading);
+    }
   }
   
   useEffect(() => {
@@ -73,14 +72,28 @@ export default function TabHomeScreen({
     textLog = "onPress";
   }
 
+  room.devices.map(async (d) => {
+    
+    mqtt_client.subscribe(d.code)
+
+    mqtt_callbacks[d.code] = (payload) => {
+      d.isON = payload.toString() === "1";
+      setRoom(room);
+      setLoading(!isLoading)
+    }
+  })
+
   const toggleSwitch = (id: string, value: boolean) => {
     room.devices.map((y) => {
       if (y._id === id) {
-        y.isON = !value;
+        y.isON = value;
+        const mqtt_message = y.isON ? "1" : "0";
+        mqtt_client.publish(y.code, mqtt_message);
+
       }
       return y;
     });
-    setRoom(room);
+    // setRoom(room);
   };
 
   // const rdevices = ;
@@ -123,14 +136,15 @@ export default function TabHomeScreen({
     
     console.log("Sending record file to server");
     const serverUrl = server+"ai/command";
-    await FileSystem.uploadAsync(serverUrl, uri);
-}
-
+    await FileSystem.uploadAsync(serverUrl, uri, {headers:{"Authorization": user.token}});
+  }
+  
   const renderItem = ({ item }: any) => {
     return (
       <View style={{ backgroundColor: "#f2f4f5" }}>
+        {isLoading ? <></> :<></>} 
         <Text style={styles.title}>{item.name}</Text>
-        {isLoading ? <></> : convertTwoRow(room.devices, 2).map((rows: any, index: number) => {
+        {convertTwoRow(room.devices, 2).map((rows: any, index: number) => {
           return (
             <View style={styles.rowItem} key={index}>
               {rows.map((item: IDevice, index: number) => {
