@@ -29,7 +29,7 @@ const Graph = ({ route }: RootStackScreenProps<"Graph">) => {
     name: "",
     category: "",
   });
-  const [data, setData] = useState<number[]>([1,2,3,4,5,6,7,8,9,10,11,12]);
+  const [data, setData] = useState<number[]>([1,2,3,4,5,6,7]);
 
   const [switchState, setSwitchState] = useState<boolean>(device.isON)
 
@@ -80,17 +80,17 @@ const Graph = ({ route }: RootStackScreenProps<"Graph">) => {
       <View style={styles.graph}>
         <BarChart
           data={{
-            labels: ["0am", "2am", "4am", "6am", "8am", "10am", "12am", "2pm", "4pm", "6pm", "8pm", "10pm"],
+            labels: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
             datasets: [
                 {
                   data: data
                 }
               ]
             }}
-          width={Dimensions.get("window").width * 0.9} // from react-native
+          width={Dimensions.get("window").width * 0.95} // from react-native
           height={220}
           yAxisLabel=""
-          yAxisSuffix="m"
+          yAxisSuffix="h"
           yAxisInterval={1} // optional, defaults to 1
           chartConfig={{
             backgroundColor: "#e26a00",

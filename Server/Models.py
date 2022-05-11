@@ -113,13 +113,13 @@ class Devices:
         for d in data:
             d = datetime.strptime(d["Value"], "%H:%M:%S")
             total += timedelta(hours=d.hour, minutes=d.minute, seconds=d.second)
-        return total.seconds/60
+        return total.seconds/60/60
 
-    def get_timeused_of_day(self, device_id):
+    def get_timeused_of_week(self, device_id):
         now = datetime.now().date()
-        twohour = timedelta(hours=2)
-        return [self.get_timeused_by_id(device_id, (now+twohour*i).strftime(DATEFORMAT), (now+twohour*(i+2)).strftime(DATEFORMAT)) for i in range(0,24,2)]
-
+        weekday = now.weekday()
+        # twohour = timedelta(hours=2)
+        return [self.get_timeused_by_id(device_id, (now-(weekday-i)*timedelta(1)).strftime(DATEFORMAT), (now-(weekday-i-1)*timedelta(1)).strftime(DATEFORMAT)) for i in range(1,8)]
 
 class Rooms:
     """Rooms Model"""
@@ -267,7 +267,6 @@ class User:
     def changePassword(self, user_id, password="", newpassword=""):
         """Update a user"""
         user = self.get_by_id(user_id)
-        print(user)
         if not user or not check_password_hash(user["password"], password):
             return
 

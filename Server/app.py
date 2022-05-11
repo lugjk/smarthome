@@ -282,7 +282,7 @@ def get_data_device(current_user, device_id):
                 "data": None,
                 "error": "Not Found"
             }, 404
-        timeused = Devices().get_timeused_of_day(device_id)
+        timeused = Devices().get_timeused_of_week(device_id)
         return jsonify({
             "message": "successfully retrieved a device",
             "data": timeused
