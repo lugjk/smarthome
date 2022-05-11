@@ -1,5 +1,6 @@
 import os
 import speech_recognition as sr
+from base64 import b64decode
 
 #Add libav to PATH
 libav_path = os.path.join(os.getcwd(), "AI", "ffmpeg", "bin")
@@ -21,7 +22,7 @@ def message(client, feed_id, payload):
 
 
 ADAFRUIT_IO_USERNAME = "Frost984"
-ADAFRUIT_IO_KEY = "aio_ksUL75UHkiWZ0ABtwWvBkHB3ywJP"
+ADAFRUIT_IO_KEY = b64decode("YWlvX0NOdEwxOTc5alliNWY5cmlKbEN3Q0RQRFdyamE=").decode()
 client = MQTTClient(ADAFRUIT_IO_USERNAME, ADAFRUIT_IO_KEY)
 client.on_connect = connected
 client.on_message = message

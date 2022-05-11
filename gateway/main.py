@@ -3,6 +3,7 @@ import random
 import time
 from Adafruit_IO import MQTTClient
 import serial.tools.list_ports
+from base64 import b64decode
 
 ADAFRUIT_FEED_ID = ["group-project.bbc-relay", "group-project.bbc-buzzer", "group-project.bbc-led"]
 ADAFRUIT_TEMP_FEED_ID = "group-project.bbc-temp"
@@ -10,7 +11,7 @@ ADAFRUIT_SWITCH_FEED_ID = "group-project.bbc-switch"
 ADAFRUIT_BUTTON_FEED_ID = "group-project.bbc-button"
 
 ADAFRUIT_IO_USERNAME = "Frost984"
-ADAFRUIT_IO_KEY = "aio_ksUL75UHkiWZ0ABtwWvBkHB3ywJP"
+ADAFRUIT_IO_KEY = b64decode("YWlvX0NOdEwxOTc5alliNWY5cmlKbEN3Q0RQRFdyamE=").decode()
 
 PORT_NAME = "COM4"  #Replace this with the find port function in the book when we don't use the emulator
 
