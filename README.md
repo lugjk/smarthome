@@ -11,7 +11,7 @@ cd smarthome
 #### Install dependencies
 For server machine and the gateway (in our demonstration, these 2 are actually 1 machine)
 ```
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 
 For client machine
