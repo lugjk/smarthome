@@ -8,10 +8,11 @@ import { IDevice, IRoom } from "../models/models";
 import Rooms from "../mooks/rooms";
 import { RootTabScreenProps } from "../types";
 import { user } from "../context/userContext"
-import AntDesign from "@expo/vector-icons/AntDesign";
+// import AntDesign from "@expo/vector-icons/AntDesign";
 
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
+import { server } from "../config/url";
 
 
 const convertTwoRow = (items: any[], amountInRow: number = 0) => {
@@ -42,7 +43,7 @@ export default function TabHomeScreen({
 
   const getRoom = async () => {
     try {
-        const response = await fetch('http://127.0.0.1:5000/rooms/' + params.room.name, {
+        const response = await fetch(server+'rooms/' + params.room.name, {
           method: "GET",
           headers: {'Content-Type': 'application/json', "Authorization": user.token},
         });
@@ -120,7 +121,7 @@ export default function TabHomeScreen({
     await sound.playAsync();*/
     
     console.log("Sending record file to server");
-    const serverUrl = "https://test-dadn.free.beeceptor.com";
+    const serverUrl = server+"ai/command";
     await FileSystem.uploadAsync(serverUrl, uri);
 }
 
@@ -142,7 +143,7 @@ export default function TabHomeScreen({
                         },
                       });
                     }} style={{ marginLeft: 'auto', paddingRight: "20px", paddingTop: "10px" }}>
-                        <AntDesign name="barschart" size={24} color="black" />
+                        {/* <AntDesign name="barschart" size={24} color="black" /> */}
                       </TouchableOpacity>
                     <Text>{item.name}</Text>
                     <View style={styles.containerbutton}>

@@ -15,8 +15,7 @@ import {
 import { useState } from "react";
 import { IAuth, User } from "../models/models";
 import { user } from "../context/userContext";
-
-
+import { server } from "../config/url";
 
 export default function LoginScreen({
   navigation,
@@ -28,7 +27,7 @@ export default function LoginScreen({
 
   const onSubmit = () => {
 
-    fetch('http://127.0.0.1:5000/users/login', {
+    fetch(server+'users/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',

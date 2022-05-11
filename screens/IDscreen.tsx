@@ -14,6 +14,7 @@ import {
 import { useState } from "react";
 import { IAuth2, IAuth } from "../models/models";
 import { user } from "../context/userContext";
+import { server } from "../config/url";
 
 export default function IDscreen({
   navigation,
@@ -26,7 +27,7 @@ export default function IDscreen({
 
   const onSubmit = () => {
     
-      fetch('http://127.0.0.1:5000/users/', {
+      fetch(server+'users/', {
         method: "PUT",
         headers: { 'Content-Type': 'application/json', "Authorization": user.token },
         body: JSON.stringify({

@@ -7,6 +7,7 @@ import { IRoom, User } from "../models/models";
 import Rooms from "../mooks/rooms";
 import { RootStackScreenProps } from "../types";
 import { user } from "../context/userContext";
+import { server } from "../config/url";
 
 const convertTwoRow = (items: any[], amountInRow: number = 0) => {
   if (!items || items.length === 0) {
@@ -30,7 +31,7 @@ export default function AllRoomScreen({
   
   const getRooms = async () => {
      try {
-      const response = await fetch('http://127.0.0.1:5000/rooms', {
+      const response = await fetch(server+'rooms', {
         method: "GET",
         headers: {'Content-Type': 'application/json', "Authorization": user.token},
       });

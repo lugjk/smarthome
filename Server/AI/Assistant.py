@@ -9,9 +9,13 @@ from pydub import AudioSegment
 
 #Connect to Adafruit server
 from Adafruit_IO import MQTTClient
+from Models import Devices
+
+listDevices = Devices().get_all()
 ADAFRUIT_RELAY_FEED_ID = "group-project.bbc-relay"
 ADAFRUIT_LED_FEED_ID = "group-project.bbc-led"
 ADAFRUIT_FEED_ID = [ADAFRUIT_RELAY_FEED_ID, ADAFRUIT_LED_FEED_ID]
+# ADAFRUIT_FEED_ID = [ d["code"] for d in listDevices]
 
 def connected(client):
     for id in ADAFRUIT_FEED_ID:

@@ -16,6 +16,7 @@ import {
 
 //import React Native chart Kit for different kind of Chart
 import { BarChart } from "react-native-chart-kit";
+import { server } from "../config/url";
 import { user } from "../context/userContext";
 import { IDevice} from "../models/models";
 import { RootStackScreenProps } from "../types";
@@ -35,7 +36,7 @@ const Graph = ({ route }: RootStackScreenProps<"Graph">) => {
 
   const getTimeUsed = async () => {
     try {
-        const response = await fetch('http://127.0.0.1:5000/devices/data/' + params.device._id, {
+        const response = await fetch(server+'devices/data/' + params.device._id, {
           method: "GET",
           headers: {'Content-Type': 'application/json', "Authorization": user.token},
         });
@@ -94,18 +95,18 @@ const Graph = ({ route }: RootStackScreenProps<"Graph">) => {
           yAxisInterval={1} // optional, defaults to 1
           chartConfig={{
             backgroundColor: "#e26a00",
-            backgroundGradientFrom: "#fb8c00",
-            backgroundGradientTo: "#ffa726",
+            backgroundGradientFrom: "#69635d",
+            backgroundGradientTo: "#272d2e",
             decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 0.5) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 0.5) => `rgba(255, 255, 255, ${opacity})`,
+            color: (opacity = 0.2) => `rgba(255, 255, 255, ${opacity})`,
+            labelColor: (opacity = 0.2) => `rgba(255, 255, 255, ${opacity})`,
             style: {
               borderRadius: 16
             },
             propsForDots: {
               r: "6",
               strokeWidth: "2",
-              stroke: "#ffa726"
+              stroke: "#272d2e"
             }
           }}
           style={{
