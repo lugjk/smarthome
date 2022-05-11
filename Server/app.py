@@ -416,7 +416,6 @@ def delete_room(current_user, room_name):
         }), 400
 
 @app.route("/ai/command", methods=["POST"])
-@token_required
 def recv_command():
     #return jsonify({"text": "AI command"}), 200
     current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

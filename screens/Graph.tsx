@@ -2,12 +2,10 @@
 // https://aboutreact.com/react-native-chart-kit/
 
 // import React in our code
-import { useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 // import {mqtt_callbacks, mqtt_client, relay_feed} from "../mqtt_connection";
 // import all the components we are going to use
 import {
-  Switch,
   Text,
   View,
   StyleSheet,
@@ -113,17 +111,6 @@ const Graph = ({ route }: RootStackScreenProps<"Graph">) => {
             marginVertical: 8,
             borderRadius: 16
           }}
-        />
-      </View>
-      <View style={styles.containerbutton}>
-        <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={device.isON ? "#f5dd4b" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
-          onValueChange={(value) => {
-            toggleSwitch(value);
-          }}
-          value={switchState}
         />
       </View>
     </>

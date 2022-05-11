@@ -8,7 +8,7 @@ import { IDevice, IRoom } from "../models/models";
 import Rooms from "../mooks/rooms";
 import { RootTabScreenProps } from "../types";
 import { user } from "../context/userContext"
-// import AntDesign from "@expo/vector-icons/AntDesign";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
@@ -34,6 +34,7 @@ export default function TabHomeScreen({
   route,
 }: RootTabScreenProps<"TabHome">) {
   const [timesPressed, setTimesPressed] = useState(0);
+  const [isLoading, setLoading] = useState(true);
   const { params }: any = route.params;
   const [room, setRoom] = useState<IRoom>({
     _id: "",
@@ -55,7 +56,7 @@ export default function TabHomeScreen({
         } catch (error) {
           console.error(error);
         } finally {
-          // setLoading(false);
+          setLoading(false);
         }
   }
   
@@ -82,7 +83,7 @@ export default function TabHomeScreen({
     setRoom(room);
   };
 
-  const rdevices = convertTwoRow(room.devices, 2);
+  // const rdevices = ;
 
   // console.log(devices)
   const [recording, setRecording] = useState();
@@ -129,7 +130,7 @@ export default function TabHomeScreen({
     return (
       <View style={{ backgroundColor: "#f2f4f5" }}>
         <Text style={styles.title}>{item.name}</Text>
-        {rdevices.map((rows: any, index: number) => {
+        {isLoading ? <></> : convertTwoRow(room.devices, 2).map((rows: any, index: number) => {
           return (
             <View style={styles.rowItem} key={index}>
               {rows.map((item: IDevice, index: number) => {
@@ -142,8 +143,8 @@ export default function TabHomeScreen({
                           device: item
                         },
                       });
-                    }} style={{ marginLeft: 'auto', paddingRight: "20px", paddingTop: "10px" }}>
-                        {/* <AntDesign name="barschart" size={24} color="black" /> */}
+                    }} style={{ marginLeft: 'auto', padding: 10}}>
+                        <AntDesign name="barschart" size={24} color="black" />
                       </TouchableOpacity>
                     <Text>{item.name}</Text>
                     <View style={styles.containerbutton}>
@@ -210,8 +211,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    padding: "10px",
-    paddingBottom: "30px",
+    padding: 10,
+    paddingBottom: 30,
     fontWeight: "bold",
     backgroundColor: "#f2f4f5",
   },
