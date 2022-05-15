@@ -7,23 +7,28 @@ radio.set_group(1)
 led.enable(True)
 
 flagDict = {"Button": True, "Magnet": True}
+isAlarm = False
 
 buttonpin = DigitalPin.P3
 magneticpin = DigitalPin.P4
-ledpin = (DigitalPin.P1, DigitalPin.P2)
+ledpin = (DigitalPin.P8, DigitalPin.P9)
 buzzerpin = DigitalPin.P5
+relaypin = (DigitalPin.P1, DigitalPin.P2)
 
 
 def on_forever():
     global flagDict
+    global isAlarm
     # Single Button
     if NPNBitKit.button(buttonpin) != flagDict["Button"]:
         s = "!1:BUTTON:" + ("0" if flagDict["Button"] else "1") + "#"
         serial.write_string(s)
-        if not flagDict["Button"] and flagDict["Magnet"]:
-            NPNBitKit.buzzer(buzzerpin, False)
-            NPNBitKit.led2_color(ledpin[0], True, ledpin[1], True)
+        # if not flagDict["Button"] and flagDict["Magnet"]:
+        #     NPNBitKit.buzzer(buzzerpin, False)
+        #     NPNBitKit.led2_color(ledpin[0], False, ledpin[1], True)
         flagDict["Button"] = not flagDict["Button"]
+        if flagDict["Button"]:
+            isAlarm = not isAlarm
     basic.pause(100)
     
     # DHT11
@@ -35,10 +40,13 @@ def on_forever():
 
     basic.pause(100)
     # Magnetic switch
+    
     if NPNBitKit.button_door_open(magneticpin) != flagDict["Magnet"]:
         s = "!1:MAGNETIC:" + ("0" if flagDict["Magnet"] else "1") + "#"
         serial.write_string(s)
-        if not flagDict["Magnet"]:
+        serial.write_string("!1:MAGNETIC:" + ("2" if isAlarm else "3") + "#")
+        
+        if not flagDict["Magnet"] and isAlarm:
             NPNBitKit.buzzer(buzzerpin, True)
             NPNBitKit.led2_color(ledpin[0], True, ledpin[1], False)
         else:
@@ -68,9 +76,20 @@ def on_data_received():
             NPNBitKit.led2_color(ledpin[0], True, ledpin[1], False)
         elif num == 2:
             NPNBitKit.led2_color(ledpin[0], False, ledpin[1], True)
+   
     elif device_id == 2:
         NPNBitKit.buzzer(buzzerpin, num != 0)
     elif device_id == 3:
-        NPNBitKit.relay(DigitalPin.P6, num != 0)
+        # if num == 0:
+        #     NPNBitKit.led2_color(ledpin[0], False, ledpin[1], False)
+        # elif num == 1:
+        #     NPNBitKit.led2_color(ledpin[0], True, ledpin[1], False)
+        # elif num == 2:
+        #     NPNBitKit.led2_color(ledpin[0], False, ledpin[1], True)
+        if num == 0:
+            NPNBitKit.led2_color(relaypin[0], False, relaypin[1], False)
+        elif num == 1:
+            NPNBitKit.led2_color(relaypin[0], False, relaypin[1], True)
+        # # NPNBitKit.relay(relaypin, num != 0)
 
 serial.on_data_received(serial.delimiters(Delimiters.HASH), on_data_received)

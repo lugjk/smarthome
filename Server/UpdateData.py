@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import pymongo
 from Models import Devices
 
-
 client = pymongo.MongoClient('mongodb://localhost:27017/')
 db = client.Smarthome
 col = db.TimeUsed
@@ -32,10 +31,10 @@ def updateData():
     if data:
         col.insert_many(data) 
 
-schedule.every().day.at("00:05").do(updateData)
 # schedule.every(30).minutes.do(updateData)
 
 def loopUpdate():
+    schedule.every().day.at("00:05").do(updateData)
     while True:
         schedule.run_pending()
     

@@ -11,8 +11,8 @@ export const mqtt_client = mqtt.connect(connectUrl, {
   clean: true,
   connectTimeout: 4000,
   username: "Frost984",
-  
-  password: "",
+  password: "aio_CNtL1979jYb5f9riJlCwCDPDWrja",
+  // password: "",
 
   reconnectPeriod: 1000,
 });

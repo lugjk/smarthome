@@ -87,6 +87,7 @@ def exec_voice_command(file_path):
     '''
     wav_filename = convert_to_wav(file_path)
     converted_text = get_text(wav_filename)
+    print(converted_text)
     os.remove(wav_filename)
     os.remove(file_path)
 

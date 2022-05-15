@@ -1,7 +1,7 @@
 import requests
 from datetime import datetime, timedelta
 
-BASE = 'https://io.adafruit.com/api/v2/Frost984/feeds/'
+BASE = 'https://io.adafruit.com/api/v2/'
 # TEMP = "group-project.bbc-temp"
 # BUZZER = "group-project.bbc-buzzer"
 
