@@ -20,24 +20,27 @@ yarn install
 ```
 
 ## Run the app:
-There are some configurations to do before you can start running this app (like changing the server IP and the adafruit key, etc.) but those config are still kinda messy, so (maybe) I'll write the guide after we finish this shitty project.
-
-On the server, run
+On the server, first you need to change Mongo DB URI in file Server/Models.py, then run:
 ```
 python Server/app.py
 ```
 
-For the client, we use Expo as our developing and testing platform. On the client machine, run
+For the client, you need to change the server IP (which show when you run server) in file config/url.js, then run:
 ```
 expo start
 ```
 
 to start the app in testing mode, then use can follow the instructions on the screen to run the app on a phone or in a web browser.
-(It would be so nice if we find out how to build a standalone APK. 2 days left, anyone?)
 
-To start the gateway, first connect your board and load `gateway/full_script.py` to it. Then run
+To start the gateway, first connect your board and load `gateway/full_script.py` to it and change Adafruit key in gateway/main.py. Then run
 ```
 python gateway/main.py
 ```
 
 to connect the gateway to the adafruit server.
+
+
+Finally, we develop a desktop application that can manage customer information, you can run it by:
+```
+python admin/app.py
+```
